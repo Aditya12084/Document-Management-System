@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,20 +35,13 @@ public class UserController {
 
         try{
 
-//            String username=user.getUsername();
-//            String password=user.getPassword();
-//            String email=user.getEmail();
-
             if(repo.findByUsername(user.getUsername())==null){
-//                User newUser=new User();
-//                newUser.setUsername(username);
-//                newUser.setEmail(email);
-//                newUser.setPassword(encoder.encode(password));
 
                 user.setPassword(encoder.encode(user.getPassword()));
 
                 String otp=generateOTP();
                 user.setOtp(otp);
+                user.setOtpCreationTime(LocalDateTime.now());
                 user.setEnabled(false);
 
                 repo.save(user);
@@ -111,9 +105,19 @@ public class UserController {
 
             User user=repo.findByEmail(email);
 
-            if (user!=null && user.getOtp().equals(enteredOtp)){
+            if (user!=null && user.getOtp()!=null && user.getOtp().equals(enteredOtp)){
+
+                LocalDateTime creationTime=user.getOtpCreationTime();
+
+                long minutesElapsed=java.time.Duration.between(creationTime,LocalDateTime.now());
+
+                if (minutesElapsed>5) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("OTP has expired. Please register again.");
+                }
+
                 user.setEnabled(true);
                 user.setOtp(null);
+                user.setOtpCreationTime(null);
                 repo.save(user);
 
                 return ResponseEntity.ok("Email verified successfully!");
