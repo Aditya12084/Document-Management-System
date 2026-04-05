@@ -1,5 +1,5 @@
 <% Object user = session.getAttribute("user"); if(user != null){
-response.sendRedirect("/home"); out.println(user);} %>
+response.sendRedirect("/"); out.println(user);} %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -21,8 +21,11 @@ response.sendRedirect("/home"); out.println(user);} %>
   <body class="bg-light">
 
     <nav class="navbar navbar-expand-lg navbar-light " style="background-color: #0090ff;">
-  <div class="container-fluid">
-    <a class="navbar-brand ms-4" href="#">DMS</a>
+  <div class="container-fluid mx-5">
+
+    <div class="d-flex ms-2 justify-content-center align-items-center"><img src="https://res.cloudinary.com/dy5qenphg/image/upload/v1775403053/ecc87d3a-0768-4637-9a79-71e716922416_xtx8qd.png" alt="Logo" width="32" height="32" class="me-2">
+      <a class="navbar-brand fw-bold" href="#">DMS</a></div>
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -195,8 +198,8 @@ response.sendRedirect("/home"); out.println(user);} %>
             toasthandler("Login successful! Redirecting...","success");
 
             setTimeout(function(){
-              window.location.href = "home";
-            },3000)
+              window.location.href = "dashboard";
+            },2000)
             
           },
 
@@ -222,10 +225,9 @@ response.sendRedirect("/home"); out.println(user);} %>
           contentType: "application/json",
           data: JSON.stringify(data),
           success: function (res) {
-            console.log(res);
-            toasthandler(`${res.responseText} Redirecting to login...`,"success");
+            toasthandler(`Redirecting for otp verification.`,"success");
             setTimeout(function(){
-              window.location.href = "/";
+              window.location.href = "/verify-otp-page?email=" + data.email;
             },3000)
           },
           error: function (res) {

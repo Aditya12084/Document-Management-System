@@ -33,32 +33,35 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user){
 
+        User existingUser=repo.findByUsername(user.getUsername());
+
         try{
 
-            if(repo.findByUsername(user.getUsername())==null){
-
-                user.setPassword(encoder.encode(user.getPassword()));
-
-                String otp=generateOTP();
-                user.setOtp(otp);
-                user.setOtpCreationTime(LocalDateTime.now());
-                user.setEnabled(false);
-
-                repo.save(user);
-
-                try {
-                    emailService.sendOtpEmail(user.getEmail(), otp);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("Failed to send OTP email.");
-                }
-
-                return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful!");
-            }
-            else{
+            if (existingUser!=null && existingUser.isEnabled()){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
             }
+
+            User userToSave= existingUser!=null ? existingUser : user;
+
+            userToSave.setPassword(encoder.encode(user.getPassword()));
+            userToSave.setEmail(user.getEmail());
+
+            String otp=generateOTP();
+            userToSave.setOtp(otp);
+            userToSave.setOtpCreationTime(LocalDateTime.now());
+            userToSave.setEnabled(false);
+
+            repo.save(userToSave);
+
+            try {
+                emailService.sendOtpEmail(user.getEmail(), otp);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Failed to send OTP email.");
+            }
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful!");
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred!");
@@ -90,7 +93,6 @@ public class UserController {
         return "logged out successfully!";
     }
 
-
     private String generateOTP() {
         java.util.Random random = new java.util.Random();
         int number = 100000 + random.nextInt(900000);
@@ -103,13 +105,15 @@ public class UserController {
             String email=request.get("email");
             String enteredOtp=request.get("otp");
 
+            System.out.println(email+" "+enteredOtp);
+
             User user=repo.findByEmail(email);
 
             if (user!=null && user.getOtp()!=null && user.getOtp().equals(enteredOtp)){
 
                 LocalDateTime creationTime=user.getOtpCreationTime();
 
-                long minutesElapsed=java.time.Duration.between(creationTime,LocalDateTime.now());
+                long minutesElapsed=java.time.Duration.between(creationTime,LocalDateTime.now()).toMinutes();
 
                 if (minutesElapsed>5) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("OTP has expired. Please register again.");
