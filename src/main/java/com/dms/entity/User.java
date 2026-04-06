@@ -16,8 +16,20 @@ public class User {
     private String email;
     private String password;
 
-    private String verificationToken;
     private boolean enabled = false;
+
+    public String getFullname() {
+        return fullName;
+    }
+
+    public void setFullname(String fullName) {
+        this.fullName = fullName;
+    }
+
+    @Column(nullable = false)
+    private String fullName;
+
+    private LocalDateTime otpCreationTime;
 
     public LocalDateTime getOtpCreationTime() {
         return otpCreationTime;
@@ -27,10 +39,12 @@ public class User {
         this.otpCreationTime = otpCreationTime;
     }
 
-    private LocalDateTime otpCreationTime;
+    public String getFullName() {
+        return fullName;
+    }
 
-    public String getVerificationToken() {
-        return verificationToken;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getOtp() {
@@ -43,9 +57,6 @@ public class User {
 
     private String otp;
 
-    public void setVerificationToken(String verificationToken) {
-        this.verificationToken = verificationToken;
-    }
 
     public boolean isEnabled() {
         return enabled;

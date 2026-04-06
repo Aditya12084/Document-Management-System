@@ -92,7 +92,7 @@ response.sendRedirect("/"); out.println(user);} %>
                 type="text"
                 id="loginUsername"
                 class="form-control mb-3"
-                placeholder="Email"
+                placeholder="Username"
                 required
               />
               <input
@@ -111,6 +111,7 @@ response.sendRedirect("/"); out.println(user);} %>
             <div class="registerMsg text-danger text-center"></div>
 
             <form id="registerForm">
+
               <input
                 type="text"
                 name=""
@@ -118,6 +119,14 @@ response.sendRedirect("/"); out.println(user);} %>
                 class="form-control mb-3"
                 placeholder="Username"
                 required
+              />
+              <input
+                      type="text"
+                      name=""
+                      id="registerFullname"
+                      class="form-control mb-3"
+                      placeholder="Full name"
+                      required
               />
               <input 
               type="email"
@@ -215,6 +224,7 @@ response.sendRedirect("/"); out.println(user);} %>
 
         let data = {
           username: $("#registerUsername").val(),
+          fullname:$("#registerFullname").val(),
           email:$("#registerEmail").val(),
           password: $("#registerPassword").val(),
         };

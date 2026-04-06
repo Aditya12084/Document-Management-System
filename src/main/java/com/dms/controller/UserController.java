@@ -33,9 +33,9 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user){
 
-        User existingUser=repo.findByUsername(user.getUsername());
-
         try{
+
+            User existingUser=repo.findByUsername(user.getUsername());
 
             if (existingUser!=null && existingUser.isEnabled()){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
