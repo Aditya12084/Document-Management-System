@@ -1,7 +1,9 @@
 package com.dms.service;
 
 
+import com.dms.controller.DashboardController;
 import com.dms.dto.ActivityDTO;
+import com.dms.dto.SubmissionsDTO;
 import com.dms.entity.Document;
 import com.dms.entity.User;
 import com.dms.repository.DocumentRepository;
@@ -9,6 +11,7 @@ import com.dms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,14 +30,14 @@ public class DashboardService {
 
         stats.put("users",userRepo.count()-userRepo.countByRole("ADMIN"));
         stats.put("admins",userRepo.countByRole("ADMIN"));
-        stats.put("docs",docRepo.count());
+        stats.put("docs",docRepo.countByTargetUserIdIsNull());
 
         long totalDocs=docRepo.count();
 
         if (totalDocs>0){
-            stats.put("pending",docRepo.countByStatus("PENDING")*100/totalDocs);
-            stats.put("rejected",docRepo.countByStatus("REJECTED")*100/totalDocs);
-            stats.put("approved",docRepo.countByStatus("approved")*100/totalDocs);
+            stats.put("pending",docRepo.countByStatusAndTargetUserIdIsNull("PENDING")*100/totalDocs);
+            stats.put("rejected",docRepo.countByStatusAndTargetUserIdIsNull("REJECTED")*100/totalDocs);
+            stats.put("approved",docRepo.countByStatusAndTargetUserIdIsNull("approved")*100/totalDocs);
         }
         else{
             stats.put("pending",0);
@@ -47,15 +50,15 @@ public class DashboardService {
     }
 
     public List<Document> getPendingDocuments(){
-        return docRepo.findByStatusOrderByUploadDateAsc("PENDING");
+        return docRepo.findByStatusAndTargetUserIdIsNullOrderByUploadDateAsc("PENDING");
     }
 
     public  List<Document> getRecentDocuments(){
-        return  docRepo.findTop5ByOrderByUploadDateDesc();
+        return  docRepo.findTop5ByTargetUserIdIsNullOrderByUploadDateDesc();
     }
 
     public  List<ActivityDTO> getRecentActivity(){
-        List<Document> docs=docRepo.findTop5ByStatusModificationTimeIsNotNullOrderByStatusModificationTimeDesc();
+        List<Document> docs=docRepo.findTop5ByStatusModificationTimeIsNotNullAndTargetUserIdIsNullOrderByStatusModificationTimeDesc();
         List<ActivityDTO> activityList=new ArrayList<>();
 
         String adminName = "System";
@@ -84,6 +87,27 @@ public class DashboardService {
         }
 
         return activityList;
+    }
+
+    public List<SubmissionsDTO> getSubmissions(){
+
+        List<Document> docs=docRepo.findAllByTargetUserIdIsNullOrderByUploadDateDesc();
+        List<SubmissionsDTO> submissionsList=new ArrayList<>();
+
+        String owner="System";
+
+        for (Document doc: docs){
+            owner="System";
+            if (doc.getUploadedBy()!=null){
+                User user=userRepo.findById(doc.getUploadedBy()).orElse(null);
+                if (user!=null){
+                    owner=user.getFullName();
+                }
+            }
+            submissionsList.add(new SubmissionsDTO(doc.getId(),owner,doc.getFilename(),doc.getUploadDate(),doc.getStatus()));
+        }
+
+        return submissionsList;
     }
 
 }

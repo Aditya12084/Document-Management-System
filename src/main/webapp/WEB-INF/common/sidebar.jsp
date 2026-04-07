@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="bootstrap" viewBox="0 0 118 94">
         <title>DMS</title>
@@ -57,10 +58,10 @@
     </symbol>
 </svg>
 <main class="d-flex">
-    <div class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 230px;">
+    <div class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-light " style="width: 230px; height: 100vh;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
             <img src="https://res.cloudinary.com/dy5qenphg/image/upload/v1775403053/ecc87d3a-0768-4637-9a79-71e716922416_xtx8qd.png" alt="Logo" width="32" height="32" class="me-2">
-            <span class="fs-4">DMS</span>
+            <span class="fs-4 fw-bold">DMS</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
@@ -78,7 +79,27 @@
                     Dashboard
                 </a>
             </li>
-            <li>
+                <li>
+                    <a href="/submissions" class="nav-link link-dark">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid"></use>
+                        </svg>
+                        User Submissions
+                    </a>
+                </li>
+<%--                <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">--%>
+<%--                    <i class="bi bi-plus-lg me-1"></i> New Upload--%>
+<%--                </button>--%>
+                <li>
+                    <a href="#" class="nav-link link-dark" data-target="section-upload" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#table"></use>
+                        </svg>
+                        Upload document
+                    </a>
+                </li>
+
+                <li>
                 <a href="#" class="nav-link link-dark" data-target="section-users">
                     <svg class="bi me-2" width="16" height="16">
                         <use xlink:href="#people-circle"></use>
@@ -86,22 +107,7 @@
                     Users
                 </a>
             </li>
-            <li>
-                <a href="#" class="nav-link link-dark" data-target="section-upload">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#table"></use>
-                    </svg>
-                    Upload document
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link link-dark">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#grid"></use>
-                    </svg>
-                    User Submissions
-                </a>
-            </li>
+
             <li>
                 <a href="#" class="nav-link link-dark">
                     <svg class="bi me-2" width="16" height="16">
@@ -144,3 +150,4 @@
             </ul>
         </div>
     </div>
+    <script src="<c:url value='/js/common.js' />"></script>

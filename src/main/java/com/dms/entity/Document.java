@@ -15,7 +15,30 @@ public class Document {
     private String filetype;
     private String filepath;
 
+    @Column(name = "doc_category")
+    private String docCategory;
+
+    public String getDocCategory() {
+        return docCategory;
+    }
+
+    public void setDocCategory(String docCategory) {
+        this.docCategory = docCategory;
+    }
+
+    public Integer getTargetUserId() {
+        return targetUserId;
+    }
+
+    public void setTargetUserId(Integer targetUserId) {
+        this.targetUserId = targetUserId;
+    }
+
     private String status;
+
+
+    @Column(name = "target_user_id",nullable = true)
+    private Integer targetUserId;
 
     @Column(name = "status_modification_time")
     private LocalDateTime statusModificationTime;

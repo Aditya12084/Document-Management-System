@@ -39,19 +39,22 @@ public class DocumentController extends BaseController{
     private static final String UPLOAD_URL="c:/dms/uploads/";
 
     @PostMapping("/upload")
-    public String UploadFile(@RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
-
-        User user=(User) session.getAttribute("user");
-
-        if (user==null){
-            return "Please login first";
-        }
+    public String UploadFile(@RequestParam("file") MultipartFile file,
+                             @RequestParam(value = "targetUserId", required = false) Integer targetUserId,
+                             @RequestParam("docCategory") String docCategory, HttpSession session) throws IOException {
 
 //        if (user.getRole()==null && !"ADMIN".equals(user.getRole())){
 //            return "Access Denied";
 //        }
 
         try {
+
+            User user=(User) session.getAttribute("user");
+
+            if (user==null){
+                return "Please login first";
+            }
+
             String filename = file.getOriginalFilename();
             String filepath = UPLOAD_URL + filename;
 
@@ -65,8 +68,8 @@ public class DocumentController extends BaseController{
             doc.setStatus("PENDING");
             doc.setFileSize(file.getSize());
             doc.setUploadedBy(user.getId());
-
-
+            doc.setTargetUserId(targetUserId);
+            doc.setDocCategory(docCategory);
 
             service.saveDocument(doc);
 

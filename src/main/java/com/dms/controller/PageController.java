@@ -46,5 +46,35 @@ public class PageController {
         return "auth/verify-otp";
     }
 
+    @GetMapping("/submissions")
+    public String submissionsPage(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        if ("ADMIN".equals(user.getRole())) {
+            return "admin/submissions";
+        }
+
+        return "user/user-home";
+    }
+
+    @GetMapping("/upload-document")
+    public String uploadDocumentPage(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        if ("ADMIN".equals(user.getRole())) {
+            return "shared/upload-doc";
+        }
+
+        return "user/user-home";
+    }
+
 
 }

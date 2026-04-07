@@ -2,6 +2,7 @@ package com.dms.controller;
 
 
 import com.dms.dto.ActivityDTO;
+import com.dms.dto.SubmissionsDTO;
 import com.dms.entity.Document;
 import com.dms.entity.User;
 import com.dms.service.DashboardService;
@@ -86,6 +87,25 @@ public class DashboardController extends BaseController{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
         }
 
+    }
+
+    @GetMapping("/submissions")
+    public ResponseEntity<?> getSubmissions(HttpSession session){
+
+        try{
+            User user=getAutheticatedUser(session);
+
+            if (!"ADMIN".equals(user.getRole())){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have ADMIN rights");
+            }
+
+            List<SubmissionsDTO> submissionsDTOList=dashboardService.getSubmissions();
+
+            return  ResponseEntity.ok(submissionsDTOList);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
+        }
     }
 
 }

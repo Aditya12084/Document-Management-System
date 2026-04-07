@@ -76,7 +76,8 @@ public class UserController {
         User dbUser=service.login(user.getUsername());
 
         if (dbUser!=null && encoder.matches(user.getPassword(),dbUser.getPassword())){
-            session.setAttribute("user",dbUser);
+              session.setAttribute("user",dbUser);
+              session.setAttribute("userRole", dbUser.getRole());
               response.put("username",dbUser.getUsername());
               response.put("role",dbUser.getRole());
 

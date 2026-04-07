@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -80,24 +81,57 @@
     }
   </style>
   <link href="sidebars.css" rel="stylesheet">
+  <script src="<c:url value='/js/common.js' />"></script>
 </head>
 <body style="background-color: rgba(0, 0, 0, .1);">
 <%@ include file="../common/sidebar.jsp" %>
 
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+<%@ include file="../common/confirm-status-modal.jsp"%>
+
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle">Confirm Action</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="uploadModalLabel">
+          <i class="bi bi-cloud-arrow-up me-2"></i>Submit Document
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body" id="modalBody">
-        Are you sure you want to proceed?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" id="confirmBtn" class="btn btn-primary">Confirm</button>
-      </div>
+      <form id="uploadForm" action="#" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+
+          <c:if test="${sessionScope.user.role=='ADMIN'}">
+            <div class="mb-3 p-3 rounded" style="background-color: #f0f7ff; border: 1px dashed #0d6efd;">
+              <label class="form-label fw-bold text-primary">Target Customer ID</label>
+              <input type="text" name="targetUserId" class="form-control" placeholder="Enter Account/User ID" required>
+              <div class="form-text">As Admin, specify which user owns this file.</div>
+            </div>
+          </c:if>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Document Category</label>
+            <select class="form-select" name="docCategory" required>
+              <option value="" selected disabled>Choose category...</option>
+              <option value="IDENTITY">KYC / Identity</option>
+              <option value="LOAN_DOC">Loan Agreement</option>
+              <option value="STATEMENTS">Bank Statements</option>
+              <option value="SANCTION">Sanction Letter</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Select File</label>
+            <input type="file" name="file" class="form-control" accept=".pdf,.jpg,.png" required>
+            <div class="form-text">Accepted: PDF, JPG, PNG (Max 5MB)</div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" id="upload-doc-btn" class="btn btn-primary px-4">
+            <i class="bi bi-check-circle me-1"></i>Upload Now
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -142,7 +176,7 @@
     </div>
 
     <div class="mt-3 d-flex bg-white px-3 py-4 rounded shadow">
-      <div class="d-flex flex-column flex-grow-1 border-end px-1">
+      <div class="d-flex flex-column flex-grow-1 border-end px-2">
         <h4 class="fs-6 fw-bold">PENDING DOCUMENTS</h4>
         <table class="table">
           <thead>
@@ -177,13 +211,13 @@
     </div>
 
     <div class="bg-white d-flex mt-3 rounded p-4">
-      <div class="col-md-6">
+      <div class="col-md-6 p-2">
         <h4 class="fs-6 fw-bold">RECENT DOCUMENTS</h4>
         <div id="recent-doc-body">
           <div colspan="4" class="text-center">Loading documents...</div>
         </div>
       </div>
-      <div class="col-md-6 px-4">
+      <div class="col-md-6 px-4 border-start p-2">
         <h4 class="fs-6 fw-bold">RECENT ACTIVITIES</h4>
         <div id="recent-act-body">
           <td colspan="4" class="text-center">Loading documents...</td>
@@ -193,7 +227,9 @@
       </div>
     </div>
   </div>
+
 </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
   let username = localStorage.getItem("username");
   if (username) {
@@ -202,18 +238,10 @@
   }
 
   $(document).ready(function() {
-    $.ajax({
-      url: "/document/recent-activity",
-      type: "GET",
-      // Do NOT include contentType or data: {}
-      success: function(res) { console.log(res); },
-      error: function(err) { console.log(err.status); }
-    });
     fetchStats();
     loadPendingDocuments();
     loadRecentDocuments();
     getRecentActivity();
-
   });
 
   function fetchStats() {
@@ -359,23 +387,22 @@
     return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
   }
 
-  let currentDocId=null;
-  let currentStatus=null;
-
-  function updateStatus(docId,newStatus){
-    currentDocId=docId;
-    currentStatus=newStatus;
-
-    const colorClass=newStatus === 'APPROVED' ? 'text-success' : 'text-danger';
-    $("#modalTitle").html("Confirm " + newStatus);
-    $("#modalBody").html("Are you sure you want to mark this document as <strong class='"+colorClass +"'>"+  newStatus +"</strong>?");
-
-    $("#confirmBtn").removeClass('btn-primary btn-success btn-danger').addClass(newStatus==="APPROVED" ? 'btn-success':'btn-danger');
 
 
-    const myModal=new bootstrap.Modal(document.getElementById('confirmModal'));
-    myModal.show();
-  }
+  // function updateStatus(docId,newStatus){
+  //   currentDocId=docId;
+  //   currentStatus=newStatus;
+  //
+  //   const colorClass=newStatus === 'APPROVED' ? 'text-success' : 'text-danger';
+  //   $("#modalTitle").html("Confirm " + newStatus);
+  //   $("#modalBody").html("Are you sure you want to mark this document as <strong class='"+colorClass +"'>"+  newStatus +"</strong>?");
+  //
+  //   $("#confirmBtn").removeClass('btn-primary btn-success btn-danger').addClass(newStatus==="APPROVED" ? 'btn-success':'btn-danger');
+  //
+  //
+  //   const myModal=new bootstrap.Modal(document.getElementById('confirmModal'));
+  //   myModal.show();
+  // }
 
 
   $("#confirmBtn").on("click",function (){
@@ -426,10 +453,17 @@
             if (doc.status === "APPROVED") {
               icon = "<i class='bi bi-check-circle fs-4 text-success'></i>";
               statusClass = "text-success";
-            } else {
+            } else if(doc.status=="REJECTED") {
               icon = "<i class='bi bi-x-circle fs-4 text-danger'></i>";
               statusClass = "text-danger";
             }
+            else{
+              icon = "<div class='d-inline-flex align-items-center justify-content-center border border-warning border-2 rounded-circle' style='width: 26px; height: 26px;'> " +
+                      "<i class='bi bi-hourglass-split text-warning'></i>"+
+            "</div>";
+              statusClass = "text-warning";
+            }
+
 
             tableContent += "<div class='d-flex small align-items-center border-bottom mb-1 pb-2'>" +
                     icon +
@@ -451,6 +485,30 @@
       }
     });
   }
+
+ $("#upload-doc-btn").on('click',function (e) {
+   e.preventDefault();
+   var form = $("#uploadForm")[0]; // The [0] gets the HTMLFormElement
+   var formData = new FormData(form);
+   // var formData = new FormData(this);
+   console.log(formData)
+   $.ajax({
+     url: "http://localhost:8080/document/upload",
+     method: 'POST',
+     data: formData,
+     processData: false, // Required for FormData
+     contentType: false,
+     success: function (res) {
+       alert("File uploaded successfully!");
+       $('#uploadModal').modal('hide'); // Close modal on success
+       location.reload(); // Refresh to show new data in your table
+     },
+     error: function (res) {
+       alert("Error: " + xhr.responseText);
+     }
+   })
+ })
+
 
 
 
