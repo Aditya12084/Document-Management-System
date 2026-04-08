@@ -90,17 +90,17 @@
 <%--                <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">--%>
 <%--                    <i class="bi bi-plus-lg me-1"></i> New Upload--%>
 <%--                </button>--%>
-                <li>
-                    <a href="#" class="nav-link link-dark" data-target="section-upload" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#table"></use>
-                        </svg>
-                        Upload document
-                    </a>
-                </li>
+<%--                <li>--%>
+<%--                    <a href="#" class="nav-link link-dark" data-target="section-upload" >--%>
+<%--                        <svg class="bi me-2" width="16" height="16">--%>
+<%--                            <use xlink:href="#table"></use>--%>
+<%--                        </svg>--%>
+<%--                        Upload document--%>
+<%--                    </a>--%>
+<%--                </li>--%>
 
                 <li>
-                <a href="#" class="nav-link link-dark" data-target="section-users">
+                <a href="/users" class="nav-link link-dark" data-target="section-users">
                     <svg class="bi me-2" width="16" height="16">
                         <use xlink:href="#people-circle"></use>
                     </svg>
@@ -116,37 +116,29 @@
                     Manage Admins
                 </a>
             </li>
-<%--            <li>--%>
-<%--                <a href="#" class="nav-link link-dark">--%>
-<%--                    <svg class="bi me-2" width="16" height="16">--%>
-<%--                        <use xlink:href="#grid"></use>--%>
-<%--                    </svg>--%>
-<%--                    Admins (only for SUPER_ADMIN)--%>
-<%--                </a>--%>
-<%--            </li>--%>
-<%--            <li>--%>
-<%--                <a href="#" class="nav-link link-dark">--%>
-<%--                    <svg class="bi me-2" width="16" height="16">--%>
-<%--                        <use xlink:href="#grid"></use>--%>
-<%--                    </svg>--%>
-<%--                    Admins (only for SUPER_ADMIN)--%>
-<%--                </a>--%>
-<%--            </li>--%>
         </ul>
         <hr>
-        <div class="dropdown">
-            <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="/assets/mainlogo.png" alt="Logo" width="32" height="32" class="rounded-circle me-2">
-                <strong id="username">mdo</strong>
+        <div class="dropdown d-flex">
+            <a href="#" class="d-flex align-items-center justif-content-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                <c:if test="${!sessionScope.user.superAdmin}">
+                    <i class="bi bi-person-fill-gear"></i>
+                </c:if>
+                <c:if test="${sessionScope.user.superAdmin}">
+                    <i class="bi bi-shield-lock fs-4 me-1 text-danger"></i>
+                </c:if>
+
+                <strong id="username" class="">mdo</strong>
             </a>
             <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="/profile">Profile</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                <li><button
+                        class="dropdown-item"
+                        onclick="logout()">
+                    log out
+                </button></li>
             </ul>
         </div>
     </div>

@@ -1,6 +1,7 @@
 package com.dms.service;
 
 import com.dms.dto.AdminDTO;
+import com.dms.dto.UserDTO;
 import com.dms.entity.User;
 import com.dms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,18 @@ public class UserService {
     public void removeAdmin(String adminId){
         repo.disableAdminById(adminId);
     }
+
+    public List<UserDTO> getUsers(){
+        List<User> userList=repo.findAllByRoleIsNullAndEnabledTrue();
+
+        List<UserDTO> userDTOList=new ArrayList<>();
+
+        for (User user:userList){
+            userDTOList.add(new UserDTO(user.getUsername(),user.getFullname(),user.getEmail()));
+        }
+
+        return userDTOList;
+    }
+
 
 }

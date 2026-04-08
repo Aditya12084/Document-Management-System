@@ -19,4 +19,6 @@ public interface UserRepository  extends JpaRepository<User, Integer> {
     @Transactional
     @Query("UPDATE User u SET u.enabled=false WHERE u.id=:adminId")
     void disableAdminById(@Param("adminId") String adminId);
+
+    List<User> findAllByRoleIsNullAndEnabledTrue();
 }

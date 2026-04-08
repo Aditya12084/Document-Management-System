@@ -1,3 +1,8 @@
+let username = localStorage.getItem("username");
+if (username) {
+    const userElement = document.getElementById("username");
+    if(userElement) userElement.innerText = username;
+}
 document.addEventListener("DOMContentLoaded", function() {
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-link');
@@ -31,4 +36,19 @@ function updateStatus(docId,newStatus){
 
     const myModal=new bootstrap.Modal(document.getElementById('confirmModal'));
     myModal.show();
+}
+
+
+function logout(){
+    $.ajax({
+        url:"http://localhost:8080/logout",
+        method:"GET",
+        success: function (){
+            window.location.href="/"
+        },
+        error: function (){
+            console.log("faild to logout")
+        }
+
+    })
 }

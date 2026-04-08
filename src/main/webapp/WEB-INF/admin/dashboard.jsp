@@ -81,7 +81,6 @@
     }
   </style>
   <link href="sidebars.css" rel="stylesheet">
-  <script src="<c:url value='/js/common.js' />"></script>
 </head>
 <body style="background-color: rgba(0, 0, 0, .1);">
 <%@ include file="../common/sidebar.jsp" %>
@@ -137,7 +136,12 @@
 </div>
 
 <div class="b-example-divider mt-3" style="margin-left:250px; width: calc(100% - 260px);">
-  <h2>Dashboard</h2>
+  <div class="d-flex">
+    <h2 class="flex-grow-1">Dashboard</h2>
+
+    <button class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#uploadModal">  <i class="bi bi-cloud-arrow-up me-2 fs-4"></i>Upload document</button>
+  </div>
+
   <div class="mt-3">
     <div class="row g-3">
       <div class="col-md-3">
@@ -154,7 +158,8 @@
       <div class="col-md-3">
         <div class="card shadow-sm border-0 rounded-3 h-100">
           <div class="card-body d-flex align-items-center justify-content-between">
-            <i class="bi bi-shield-lock fs-1 text-dark"></i>
+<%--            <i class="bi bi-shield-lock "></i>--%>
+            <i class="bi bi-person-fill-gear fs-1 text-dark"></i>
             <div class="text-end">
               <h6 class="text-muted mb-1 text-nowrap" style="font-size: 10px;">TOTAL ADMINS</h6>
               <h3 class="fw-bold mb-0" id="total-admins">10</h3>
@@ -231,11 +236,7 @@
 </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  let username = localStorage.getItem("username");
-  if (username) {
-    const userElement = document.getElementById("username");
-    if(userElement) userElement.innerText = username;
-  }
+
 
   $(document).ready(function() {
     fetchStats();

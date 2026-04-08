@@ -128,5 +128,24 @@ public class DashboardController extends BaseController{
         }
 
     }
+    @GetMapping("/users")
+    public ResponseEntity<?> getUsers(HttpSession session){
+        try{
+            User user=getAutheticatedUser(session);
+
+            if("ADMIN".equals(user.getRole())){
+                return ResponseEntity.ok(userService.getUsers());
+            }
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have ADMIN rights");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
+        }
+
+    }
+
+
+
 
 }

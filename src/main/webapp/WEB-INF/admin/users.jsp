@@ -65,71 +65,44 @@
 </div>
 <div class="mx-4 mt-3 flex-grow-1">
     <div class="d-flex">
-        <h2 class="flex-grow-1">Admins</h2>
-        <button data-bs-toggle="modal" data-bs-target="#createAdminModal" class="my-2 btn btn-success">Create Admin</button>
+        <h2 class="flex-grow-1">Users</h2>
     </div>
     <table id="example" class="table table-striped small">
         <thead>
         <tr>
-            <th>Full Name</th>
             <th>Username</th>
+            <th>Full Name</th>
             <th>Email</th>
-            <th>Action</th>
         </tr>
         </thead>
-        <tbody id="admin-table-body">
+        <tbody id="users-table-body">
         </tbody>
     </table>
 </div>
 <script>
 
     $(document).ready(function () {
-        fetchAdmins();
-    })
-
-    $('#create-admin-form').on('submit',function (e){
-        e.preventDefault()
-
-        let data={
-            username:$("#admin-username").val(),
-            fullname: $("#admin-fullname").val(),
-            email: $("#admin-email").val(),
-        }
-
-        $.ajax({
-            url:"http://localhost:8080/register",
-            method:'POST',
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function (res){
-                $('#createAdminModal').modal('hide');
-                window.location.href = "/verify-otp-page?email=" + data.email;
-            },
-            error: function (error){
-                console.log("error");
-            }
-        })
-
+        fetchUsers();
     })
 
 
-    function fetchAdmins(){
+    function fetchUsers(){
         $.ajax({
-            url:"http://localhost:8080/dashboard/admins",
+            url:"http://localhost:8080/dashboard/users",
             method:'GET',
-            success: function (admins){
+            success: function (users){
                 let tableContent="";
 
-                admins.forEach(admin=>{
+                users.forEach(user=>{
 
-                    tableContent+= "<tr> " +
-                        "<td>"+admin.fullname+"</td> "+
-                        "<td>"+admin.username+"</td> " +
-                        "<td>"+admin.email+"</td>" + "<td><button onclick='removeAdmin("+admin.id+")' class='btn btn-danger px-1 py-0 small'>REMOVE</button></td>"+
-                    "</tr>"
+                    tableContent+= "<tr>" +
+                        "<td>"+user.username+"</td> " +
+                        "<td>"+user.fullname+"</td> "+
+                        "<td>"+user.email+"</td>" +
+                        "</tr>"
                 })
 
-                $("#admin-table-body").html(tableContent);
+                $("#users-table-body").html(tableContent);
 
 
                 if ($.fn.DataTable.isDataTable("#example")){
@@ -140,7 +113,7 @@
                     "order":[[2,'desc']],
                     "pageLength":10,
                     "language":{
-                        "emptyTable":"No admins found"
+                        "emptyTable":"No users found"
                     }
                 })
             },
@@ -149,24 +122,6 @@
             }
         })
     }
-
-    function removeAdmin(adminid){
-        console.log(adminid)
-        $.ajax({
-            url:"http://localhost:8080/remove-admin",
-            method:"POST",
-            contentType: "text/plain",
-            data: adminid.toString(),
-            success: function (res){
-                console.log(res);
-                location.reload();
-            },
-            error: function (error){
-                console.log(error)
-            }
-        })
-    }
-
 
 </script>
 </body>

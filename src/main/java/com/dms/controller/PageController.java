@@ -92,5 +92,30 @@ public class PageController {
         return "user/user-home";
     }
 
+    @GetMapping("/users")
+    public String usersPage(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        if ("ADMIN".equals(user.getRole())) {
+            return "admin/users";
+        }
+        return "user/user-home";
+    }
+
+    @GetMapping("/profile")
+    public String profilePage(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        return "common/profile";
+    }
+
 
 }
