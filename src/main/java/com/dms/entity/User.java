@@ -16,6 +16,12 @@ public class User {
     private String email;
     private String password;
 
+    public boolean isSuperAdmin() {
+        return isSuperAdmin;
+    }
+
+    private boolean isSuperAdmin;
+
     private boolean enabled = false;
 
     public String getFullname() {

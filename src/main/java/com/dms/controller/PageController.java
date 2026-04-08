@@ -40,6 +40,8 @@ public class PageController {
 
         User user=repo.findByEmail(email);
 
+
+
         if (user == null || user.isEnabled()) {
             return "redirect:/";
         }
@@ -73,6 +75,20 @@ public class PageController {
             return "shared/upload-doc";
         }
 
+        return "user/user-home";
+    }
+
+    @GetMapping("/manage-admins")
+    public String manageAdminsPage(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        if ("ADMIN".equals(user.getRole()) && user.isSuperAdmin()) {
+            return "admin/manage-admins";
+        }
         return "user/user-home";
     }
 

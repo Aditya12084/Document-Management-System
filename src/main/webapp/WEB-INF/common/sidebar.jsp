@@ -109,29 +109,29 @@
             </li>
 
             <li>
-                <a href="#" class="nav-link link-dark">
+                <a href="/manage-admins" class="nav-link link-dark">
                     <svg class="bi me-2" width="16" height="16">
                         <use xlink:href="#grid"></use>
                     </svg>
-                    Verification
+                    Manage Admins
                 </a>
             </li>
-            <li>
-                <a href="#" class="nav-link link-dark">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#grid"></use>
-                    </svg>
-                    Admins (only for SUPER_ADMIN)
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link link-dark">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#grid"></use>
-                    </svg>
-                    Admins (only for SUPER_ADMIN)
-                </a>
-            </li>
+<%--            <li>--%>
+<%--                <a href="#" class="nav-link link-dark">--%>
+<%--                    <svg class="bi me-2" width="16" height="16">--%>
+<%--                        <use xlink:href="#grid"></use>--%>
+<%--                    </svg>--%>
+<%--                    Admins (only for SUPER_ADMIN)--%>
+<%--                </a>--%>
+<%--            </li>--%>
+<%--            <li>--%>
+<%--                <a href="#" class="nav-link link-dark">--%>
+<%--                    <svg class="bi me-2" width="16" height="16">--%>
+<%--                        <use xlink:href="#grid"></use>--%>
+<%--                    </svg>--%>
+<%--                    Admins (only for SUPER_ADMIN)--%>
+<%--                </a>--%>
+<%--            </li>--%>
         </ul>
         <hr>
         <div class="dropdown">

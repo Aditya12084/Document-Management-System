@@ -133,8 +133,14 @@
           success: function (res) {
             toasthandler(`OTP Verified Successfully!`,"success");
             setTimeout(function(){
-              window.location.href = "/";
-            },3000)
+
+              if (localStorage.getItem("role") && localStorage.getItem("role")==="ADMIN"){
+                window.location.href = "/manage-admins";
+              }
+              else{
+                window.location.href = "/";
+              }
+            },2000)
           },
           error: function (res) {
             console.log(res);

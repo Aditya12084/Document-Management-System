@@ -6,6 +6,7 @@ import com.dms.dto.SubmissionsDTO;
 import com.dms.entity.Document;
 import com.dms.entity.User;
 import com.dms.service.DashboardService;
+import com.dms.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ public class DashboardController extends BaseController{
 
     @Autowired
     private DashboardService dashboardService;
+
+    @Autowired
+    private UserService userService;
 
 
     @GetMapping("/stats")
@@ -106,6 +110,23 @@ public class DashboardController extends BaseController{
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
         }
+    }
+
+    @GetMapping("/admins")
+    public ResponseEntity<?> getAdmins(HttpSession session){
+        try{
+            User user=getAutheticatedUser(session);
+
+            if("ADMIN".equals(user.getRole()) && user.isSuperAdmin()){
+                return ResponseEntity.ok(userService.getAdmins());
+            }
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have SUPER ADMIN rights");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
+        }
+
     }
 
 }

@@ -31,9 +31,10 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user){
+    public ResponseEntity<?> register(@RequestBody User user,HttpSession session){
 
         try{
+            User adminUser=(User) session.getAttribute("user");
 
             User existingUser=repo.findByUsername(user.getUsername());
 
@@ -43,7 +44,13 @@ public class UserController {
 
             User userToSave= existingUser!=null ? existingUser : user;
 
-            userToSave.setPassword(encoder.encode(user.getPassword()));
+            if (adminUser!=null && adminUser.isSuperAdmin()){
+                userToSave.setRole("ADMIN");
+                userToSave.setPassword(encoder.encode("admin"));
+            } else{
+                userToSave.setPassword(encoder.encode(user.getPassword()));
+            }
+
             userToSave.setEmail(user.getEmail());
 
             String otp=generateOTP();
@@ -135,7 +142,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Verification failed.");
 
         }
+    }
 
+    @PostMapping("/remove-admin")
+    public ResponseEntity<?> removeAdmin(@RequestBody String adminId){
+        try{
+            service.removeAdmin(adminId);
+
+            return ResponseEntity.ok("Admin removed successfully");
+
+        } catch (Exception e) {
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
+        }
     }
 
 }
