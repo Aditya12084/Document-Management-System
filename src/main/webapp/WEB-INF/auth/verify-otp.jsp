@@ -74,19 +74,16 @@
       const $this = $(this);
       let val = $this.val();
 
-      // Ensure only 1 digit
       if (val.length > 1) {
         $this.val(val.slice(0, 1));
         val = $this.val();
       }
 
-      // Move to next box
       if (val !== "" && $this.next().length) {
         $this.next().prop('disabled', false).focus();
       }
     });
 
-    // 2. Handle Backspace (Keydown is better for capturing Backspace)
     $inputs.on('keydown', function(e) {
       const $this = $(this);
       if (e.key === 'Backspace') {
@@ -109,7 +106,6 @@
       e.preventDefault();
     });
 
-    // 4. Verification Logic
     $('#verify-btn').on('click', function() {
       const otpValue = $inputs.map(function() {
         return $(this).val();
@@ -117,13 +113,27 @@
 
       const urlParams=new URLSearchParams(window.location.search);
       const emailvalue=urlParams.get('email');
+      const isUpdatePwdMode = urlParams.get('mode') === 'pwdUpdate';
+      const isForgetPwdMode = urlParams.get('mode') === 'forgetPwd';
+
+      console.log(isUpdatePwdMode,isForgetPwdMode)
+
+      let targetUrl = "http://localhost:8080/verify-otp";
+
+      if (isUpdatePwdMode) {
+        targetUrl = "http://localhost:8080/verify-otp-up-pwd";
+      }
+      if(isForgetPwdMode){
+        targetUrl = "http://localhost:8080/verify-otp-forget-pass";
+      }
+
 
       if (otpValue.length < 6) {
         toasthandler("Please enter all 6 digits.")
         return;
       }
         $.ajax({
-          url: "http://localhost:8080/verify-otp",
+          url: targetUrl,
           type: "POST",
           contentType: "application/json",
           data: JSON.stringify({
@@ -134,7 +144,13 @@
             toasthandler(`OTP Verified Successfully!`,"success");
             setTimeout(function(){
 
-              if (localStorage.getItem("role") && localStorage.getItem("role")==="ADMIN"){
+              if (isUpdatePwdMode) {
+                window.location.href = "/profile";
+              }
+              else if(isForgetPwdMode){
+                window.location.href="/reset-password"
+              }
+              else if (localStorage.getItem("role") && localStorage.getItem("role")==="ADMIN"){
                 window.location.href = "/manage-admins";
               }
               else{

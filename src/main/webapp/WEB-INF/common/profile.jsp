@@ -58,19 +58,25 @@
                     <h6 class="text-block mb-0">Email:</h6>
                     <p class="mb-0 ms-1">adityapatayane1@gmail.com</p>
                 </div>
-                <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-primary">Update Password</button>
+                <div class="d-flex justify-content-center" >
+                    <button type="button"  id="update-pwd-btn" style="display: block" onclick="showUpdatePwdDiv()" class="btn btn-primary">Update Password</button>
                 </div>
             </div>
-            <div id="update-pwd-div">
+            <div id="update-pwd-div" style="display: none">
+                <form>
                 <div class="mb-3">
-                    <input name="admin-fullname" id="admin-fullname" type="text" class="form-control" placeholder="Enter current password" required>
+                    <input name="" id="current-pwd" type="password" class="form-control" placeholder="Enter current password" required>
                 </div>
                 <div class="mb-3">
-                    <input name="admin-email" type="email" id="admin-email" class="form-control" placeholder="Enter new password" required>
+                    <input name="admin-email" type="password" id="new-pwd" class="form-control" placeholder="Enter new password" required>
                 </div><div class="mb-3">
-                <input name="admin-email" type="email" id="admin-email" class="form-control" placeholder="Re-type new password" required>
+                <input name="admin-email" type="password" id="retype-new-pwd" class="form-control" placeholder="Re-type new password" required>
                 </div>
+                <div class="d-flex flex-wrap justify-content-center gap-1 ">
+                    <button type="submit" class="col-5 btn btn-success" id="updatePwdbtn">Update</button>
+                    <button type="button" onclick="showUpdatePwdDiv()" class="col-5 btn btn-danger w-80">Cancel</button>
+                </div>
+                </form>
             </div>
 
         </form>
@@ -78,6 +84,50 @@
     </div>
 
 </div>
+
+<script>
+
+    function showUpdatePwdDiv(){
+        let updatePwdDiv=document.getElementById("update-pwd-div");
+        let updatePwdBtn=document.getElementById("update-pwd-btn");
+
+
+        if(updatePwdDiv.style.display=="block"){
+            updatePwdDiv.style.display="none";
+            updatePwdBtn.style.display="block";
+        }
+        else{
+            updatePwdDiv.style.display="block";
+            updatePwdBtn.style.display="none";
+        }
+    }
+
+    $("#updatePwdbtn").on("click",function (e){
+
+        e.preventDefault()
+        let currentPwd=$("#current-pwd").val()
+        let newPwd=$("#new-pwd").val()
+        let retypeNewPwd=$("#retype-new-pwd").val()
+
+
+        $.ajax({
+            url:"http://localhost:8080/verify-current-pwd",
+            method:"POST",
+            contentType:"application/json",
+            data:JSON.stringify({
+                currentPwd:currentPwd,
+                newPwd:newPwd
+            }),
+            success: function (res){
+                window.location.href="/verify-otp-pass-up?mode=pwdUpdate"
+            },
+            error: function (err){
+                console.log("error")
+            }
+
+        })
+    })
+</script>
 
 </body>
 </html>

@@ -389,23 +389,6 @@
   }
 
 
-
-  // function updateStatus(docId,newStatus){
-  //   currentDocId=docId;
-  //   currentStatus=newStatus;
-  //
-  //   const colorClass=newStatus === 'APPROVED' ? 'text-success' : 'text-danger';
-  //   $("#modalTitle").html("Confirm " + newStatus);
-  //   $("#modalBody").html("Are you sure you want to mark this document as <strong class='"+colorClass +"'>"+  newStatus +"</strong>?");
-  //
-  //   $("#confirmBtn").removeClass('btn-primary btn-success btn-danger').addClass(newStatus==="APPROVED" ? 'btn-success':'btn-danger');
-  //
-  //
-  //   const myModal=new bootstrap.Modal(document.getElementById('confirmModal'));
-  //   myModal.show();
-  // }
-
-
   $("#confirmBtn").on("click",function (){
     const btn=$(this)
     btn.prop('disabled',true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');

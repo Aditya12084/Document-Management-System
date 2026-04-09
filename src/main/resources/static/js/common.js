@@ -44,7 +44,9 @@ function logout(){
         url:"http://localhost:8080/logout",
         method:"GET",
         success: function (){
+            localStorage.clear()
             window.location.href="/"
+
         },
         error: function (){
             console.log("faild to logout")

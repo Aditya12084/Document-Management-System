@@ -20,6 +20,34 @@ response.sendRedirect("/"); out.println(user);} %>
   </head>
   <body class="bg-light">
 
+
+
+  <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModal" aria-hidden="true" ">
+    <div class="modal-dialog modal-dialog-centered " style="max-width: 400px;">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="forgotPasswordModal">
+            Forgot Password
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="create-admin-form" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+              <input name="email" id="forgot-email" type="email" class="form-control" placeholder="Enter registered email" required>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" onclick="forgotPassword()" id="create-admin-btn" class="btn btn-primary px-4">
+              <i class="bi bi-check-circle me-1"></i>Continue
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
     <nav class="navbar navbar-expand-lg navbar-light " style="background-color: #0090ff;">
   <div class="container-fluid mx-5">
 
@@ -29,22 +57,7 @@ response.sendRedirect("/"); out.println(user);} %>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <!-- <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-    </div> -->
+
   </div>
 </nav>
 
@@ -102,7 +115,15 @@ response.sendRedirect("/"); out.println(user);} %>
                 placeholder="Password"
                 required
               />
-              <button class="btn w-100" style="background-color: #0090ff;">Login</button>
+              <button class="btn  w-100" style="background-color: #0090ff;">Login</button>
+              <div class="d-flex mt-2 justify-content-end">
+                <a href="javascript:void(0)"
+                   class="small italic text-decoration-none"
+                   data-bs-toggle="modal"
+                   data-bs-target="#forgotPasswordModal">
+                  Forgot Password?
+                </a>
+              </div>
             </form>
           </div>
 
@@ -169,18 +190,16 @@ response.sendRedirect("/"); out.println(user);} %>
           if(type=="success"){
               toastElement.classList.add("bg-success");
           }
-          else if(type="error"){
+          else if(type=="error"){
             toastElement.classList.add("bg-danger");
           }
           else{
             toastElement.classList.add("bg-primary");
           }
-
           const toastInstance=new bootstrap.Toast(toastElement,{
             autohide:true,
             delay:3000
           });
-
           toastInstance.show();
       }
 
@@ -202,7 +221,6 @@ response.sendRedirect("/"); out.println(user);} %>
           success: function (res) {
             localStorage.setItem("username", res.username);
             localStorage.setItem("role", res.role);
-            /*console.log(res.username);*/
 
             toasthandler("Login successful! Redirecting...","success");
 
@@ -213,7 +231,6 @@ response.sendRedirect("/"); out.println(user);} %>
           },
 
           error: function (res) {
-            /*0("#loginMsg").text("Invalid credentials");*/
             toasthandler("Invalid credentials","errror");
           },
         });
@@ -246,6 +263,28 @@ response.sendRedirect("/"); out.println(user);} %>
           },
         });
       });
+
+
+      function forgotPassword(){
+        let forgotEmail=$("#forgot-email").val()
+
+        $.ajax({
+          url:"http://localhost:8080/forget-pwd",
+          method:"POST",
+          contentType:"application/json",
+          data:JSON.stringify({
+             email:forgotEmail
+          }),
+          success: function (res){
+            window.location.href="http://localhost:8080/verify-otp-frg-pwd?email="+forgotEmail+"&mode=forgetPwd"
+          },
+          error:function (err){
+            console.log("error")
+          }
+
+        })
+
+      }
 
      
     </script>

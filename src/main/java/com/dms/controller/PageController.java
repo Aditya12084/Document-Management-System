@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -40,13 +41,36 @@ public class PageController {
 
         User user=repo.findByEmail(email);
 
-
-
         if (user == null || user.isEnabled()) {
             return "redirect:/";
         }
         return "auth/verify-otp";
     }
+
+    @GetMapping("/verify-otp-pass-up")
+    public String verifyOtpUpPassword(HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+        if (user==null || !user.isEnabled()){
+            return "redirect:/";
+        }
+
+        return "auth/verify-otp";
+    }
+    @GetMapping("/verify-otp-frg-pwd")
+    public String verifyOtpForgetPassword(@RequestParam("email") String email){
+
+        User user=repo.findByEmail(email);
+
+        System.out.println("My email is :"+ email);
+
+        if (user!=null && user.getOtpCreationTime()==null){
+            return "redirect:/";
+        }
+
+        return "auth/verify-otp";
+    }
+
 
     @GetMapping("/submissions")
     public String submissionsPage(HttpSession session) {
@@ -117,5 +141,18 @@ public class PageController {
         return "common/profile";
     }
 
+
+
+    @GetMapping("/reset-password")
+    public String resetPasswordPage(HttpSession session){
+
+        String email = (String) session.getAttribute("resetPasswordSession");
+
+        if (email==null){
+            return "redirect:/";
+        }
+
+        return "auth/reset-password";
+    }
 
 }
