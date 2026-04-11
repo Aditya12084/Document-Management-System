@@ -22,7 +22,7 @@ public class PageController {
     }
 
     @GetMapping("/dashboard")
-    public String homePage(HttpSession session) {
+    public String dashboardPage(HttpSession session) {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
@@ -33,7 +33,7 @@ public class PageController {
             return "admin/dashboard";
         }
 
-        return "user/user-home";
+        return "redirect:/home";
     }
 
     @GetMapping("/verify-otp-page")
@@ -57,6 +57,7 @@ public class PageController {
 
         return "auth/verify-otp";
     }
+
     @GetMapping("/verify-otp-frg-pwd")
     public String verifyOtpForgetPassword(@RequestParam("email") String email){
 
@@ -141,8 +142,6 @@ public class PageController {
         return "common/profile";
     }
 
-
-
     @GetMapping("/reset-password")
     public String resetPasswordPage(HttpSession session){
 
@@ -153,6 +152,54 @@ public class PageController {
         }
 
         return "auth/reset-password";
+    }
+
+    @GetMapping("/home")
+    public String homePage(HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+
+        if (user==null){
+            return "redirect:/";
+        }
+
+        if ("ADMIN".equals(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+
+        return "user/home";
+    }
+
+    @GetMapping("/my-documents")
+    public String myDocumentsPage(HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+
+        if (user==null){
+            return "redirect:/";
+        }
+
+        if ("ADMIN".equals(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+
+        return "user/my-documents";
+    }
+
+    @GetMapping("/received-documents")
+    public String recDocumentsPage(HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+
+        if (user==null){
+            return "redirect:/";
+        }
+
+        if ("ADMIN".equals(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+
+        return "user/received-documents";
     }
 
 }

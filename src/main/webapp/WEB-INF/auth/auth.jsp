@@ -225,7 +225,7 @@ response.sendRedirect("/"); out.println(user);} %>
             toasthandler("Login successful! Redirecting...","success");
 
             setTimeout(function(){
-              window.location.href = "dashboard";
+              window.location.href = res.redirectUrl;
             },2000)
             
           },

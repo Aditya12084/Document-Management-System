@@ -1,18 +1,15 @@
-package com.dms.dto;
-
+package com.dms.dto.admin;
 
 import lombok.Data;
 
 @Data
-public class AdminDTO {
+public class UserDTO {
 
-    int id;
     String username;
     String fullname;
     String email;
 
-    public AdminDTO(int id,String username,String fullname,String email){
-        this.id=id;
+    public UserDTO(String username,String fullname,String email){
         this.username=username;
         this.fullname=fullname;
         this.email=email;

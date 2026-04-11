@@ -65,55 +65,71 @@
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
-            <%--      <li class="nav-item">--%>
-            <%--        <a href="#" class="nav-link active" aria-current="page">--%>
-            <%--          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>--%>
-            <%--          Home--%>
-            <%--        </a>--%>
-            <%--      </li>--%>
+            <c:if test="${sessionScope.user.role=='ADMIN'}">
             <li>
                 <a href="/dashboard" class="nav-link active" data-target="section-dashboard">
-                    <svg class="bi me-2" width="16" height="16">
+                    <svg class="bi me-1" width="16" height="16">
                         <use xlink:href="#speedometer2"></use>
                     </svg>
                     Dashboard
                 </a>
             </li>
+            </c:if >
+            <c:if test="${sessionScope.user.role=='ADMIN'}">
                 <li>
                     <a href="/submissions" class="nav-link link-dark">
-                        <svg class="bi me-2" width="16" height="16">
+                        <svg class="bi me-1" width="16" height="16">
                             <use xlink:href="#grid"></use>
                         </svg>
                         User Submissions
                     </a>
                 </li>
-<%--                <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">--%>
-<%--                    <i class="bi bi-plus-lg me-1"></i> New Upload--%>
-<%--                </button>--%>
-<%--                <li>--%>
-<%--                    <a href="#" class="nav-link link-dark" data-target="section-upload" >--%>
-<%--                        <svg class="bi me-2" width="16" height="16">--%>
-<%--                            <use xlink:href="#table"></use>--%>
-<%--                        </svg>--%>
-<%--                        Upload document--%>
-<%--                    </a>--%>
-<%--                </li>--%>
-
+            </c:if >
+            <c:if test="${sessionScope.user.role=='ADMIN'}">
                 <li>
                 <a href="/users" class="nav-link link-dark" data-target="section-users">
-                    <svg class="bi me-2" width="16" height="16">
+                    <svg class="bi me-1" width="16" height="16">
                         <use xlink:href="#people-circle"></use>
                     </svg>
                     Users
                 </a>
             </li>
-
+            </c:if >
+            <c:if test="${sessionScope.user.role=='ADMIN'}">
             <li>
                 <a href="/manage-admins" class="nav-link link-dark">
-                    <svg class="bi me-2" width="16" height="16">
+                    <svg class="bi me-1" width="16" height="16">
                         <use xlink:href="#grid"></use>
                     </svg>
                     Manage Admins
+                </a>
+            </li>
+            </c:if >
+
+
+
+            <li>
+                <a href="/home" class="nav-link active" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
+                    <svg class="bi me-1" width="20" height="16">
+                        <use xlink:href="#speedometer2"></use>
+                    </svg>
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="/my-documents" class="nav-link active" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
+                    <svg class="bi me-1" width="16" height="16">
+                        <use xlink:href="#speedometer2"></use>
+                    </svg>
+                    My Documents
+                </a>
+            </li>
+            <li>
+                <a href="/received-documents" class="nav-link active" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
+                    <svg class="bi me-1" width="16" height="16">
+                        <use xlink:href="#speedometer2"></use>
+                    </svg>
+                    Received Documents
                 </a>
             </li>
         </ul>
@@ -121,7 +137,7 @@
         <div class="dropdown d-flex">
             <a href="#" class="d-flex align-items-center justif-content-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
                 <c:if test="${!sessionScope.user.superAdmin}">
-                    <i class="bi bi-person-fill-gear"></i>
+                    <i class="bi bi-person-fill-gear fs-4 me-1"></i>
                 </c:if>
                 <c:if test="${sessionScope.user.superAdmin}">
                     <i class="bi bi-shield-lock fs-4 me-1 text-danger"></i>

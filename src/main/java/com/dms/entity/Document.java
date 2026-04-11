@@ -9,11 +9,34 @@ public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private String filename;
     private String filetype;
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
     private String filepath;
+
+    @Column(name = "is_active")
+    private Boolean isActive=true;
+
+    @Column(name = "rejection remark")
+    private String rejectionRemark;
+
+    public String getRejectionRemark() {
+        return rejectionRemark;
+    }
+
+    public void setRejectionRemark(String rejectionRemark) {
+        this.rejectionRemark = rejectionRemark;
+    }
 
     @Column(name = "doc_category")
     private String docCategory;

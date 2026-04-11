@@ -10,7 +10,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmBtn" class="btn btn-primary">Confirm</button>
+                <button type="submit" id="confirmBtn" class="btn btn-primary">Confirm</button>
             </div>
         </div>
     </div>

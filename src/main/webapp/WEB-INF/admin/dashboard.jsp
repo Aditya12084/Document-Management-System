@@ -216,6 +216,7 @@
     </div>
 
     <div class="bg-white d-flex mt-3 rounded p-4">
+
       <div class="col-md-6 p-2">
         <h4 class="fs-6 fw-bold">RECENT DOCUMENTS</h4>
         <div id="recent-doc-body">
@@ -227,10 +228,10 @@
         <div id="recent-act-body">
           <td colspan="4" class="text-center">Loading documents...</td>
         </div>
-
-
       </div>
+
     </div>
+
   </div>
 
 </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -363,39 +364,47 @@
     })
   }
 
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
+  // function formatBytes(bytes, decimals = 2) {
+  //   if (bytes === 0) return '0 Bytes';
+  //
+  //   const k = 1024;
+  //   const dm = decimals < 0 ? 0 : decimals;
+  //   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  //
+  //   const i = Math.floor(Math.log(bytes) / Math.log(k));
+  //
+  //   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  // }
 
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-
-  function getRelativeTime(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
-    const diffInDays = Math.floor(diffInSeconds / 86400);
-
-    if (diffInDays === 0) return "Today";
-    if (diffInDays === 1) return "Yesterday";
-    if (diffInDays < 7) return diffInDays + " days ago";
-
-    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
-  }
+  // function getRelativeTime(dateString) {
+  //   const date = new Date(dateString);
+  //   const now = new Date();
+  //   const diffInSeconds = Math.floor((now - date) / 1000);
+  //   const diffInDays = Math.floor(diffInSeconds / 86400);
+  //
+  //   if (diffInDays === 0) return "Today";
+  //   if (diffInDays === 1) return "Yesterday";
+  //   if (diffInDays < 7) return diffInDays + " days ago";
+  //
+  //   return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  // }
 
 
   $("#confirmBtn").on("click",function (){
     const btn=$(this)
     btn.prop('disabled',true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');
 
+    if (currentStatus=="REJECTED"){
+      data={
+        rejectionRemark:$("#admin-remark-input").val()
+      }
+    }
+
     $.ajax({
       url:"http://localhost:8080/document/"+currentDocId+"/status?status="+currentStatus,
       method:'POST',
+      contentType:"application/json",
+      data:JSON.stringify(data),
       success: function (res){
         bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
         btn.prop('disabled',false).text('Confirm');
@@ -472,10 +481,8 @@
 
  $("#upload-doc-btn").on('click',function (e) {
    e.preventDefault();
-   var form = $("#uploadForm")[0]; // The [0] gets the HTMLFormElement
+   var form = $("#uploadForm")[0];
    var formData = new FormData(form);
-   // var formData = new FormData(this);
-   console.log(formData)
    $.ajax({
      url: "http://localhost:8080/document/upload",
      method: 'POST',

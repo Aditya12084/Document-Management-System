@@ -1,8 +1,8 @@
 package com.dms.controller;
 
 
-import com.dms.dto.ActivityDTO;
-import com.dms.dto.SubmissionsDTO;
+import com.dms.dto.admin.ActivityDTO;
+import com.dms.dto.common.DocumentDTO;
 import com.dms.entity.Document;
 import com.dms.entity.User;
 import com.dms.service.DashboardService;
@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.print.Doc;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -103,9 +101,9 @@ public class DashboardController extends BaseController{
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have ADMIN rights");
             }
 
-            List<SubmissionsDTO> submissionsDTOList=dashboardService.getSubmissions();
+            List<DocumentDTO> documentDTOList =dashboardService.getSubmissions();
 
-            return  ResponseEntity.ok(submissionsDTOList);
+            return  ResponseEntity.ok(documentDTOList);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
@@ -128,6 +126,8 @@ public class DashboardController extends BaseController{
         }
 
     }
+
+
     @GetMapping("/users")
     public ResponseEntity<?> getUsers(HttpSession session){
         try{

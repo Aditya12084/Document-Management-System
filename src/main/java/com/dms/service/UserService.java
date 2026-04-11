@@ -1,7 +1,7 @@
 package com.dms.service;
 
-import com.dms.dto.AdminDTO;
-import com.dms.dto.UserDTO;
+import com.dms.dto.admin.AdminDTO;
+import com.dms.dto.admin.UserDTO;
 import com.dms.entity.User;
 import com.dms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +55,8 @@ public class UserService {
 
         return userDTOList;
     }
+
+
 
 
 }

@@ -22,9 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @RestController
 @RequestMapping("/document")
@@ -39,13 +37,9 @@ public class DocumentController extends BaseController{
     private static final String UPLOAD_URL="c:/dms/uploads/";
 
     @PostMapping("/upload")
-    public String UploadFile(@RequestParam("file") MultipartFile file,
+    public String uploadFile(@RequestParam("file") MultipartFile file,
                              @RequestParam(value = "targetUserId", required = false) Integer targetUserId,
                              @RequestParam("docCategory") String docCategory, HttpSession session) throws IOException {
-
-//        if (user.getRole()==null && !"ADMIN".equals(user.getRole())){
-//            return "Access Denied";
-//        }
 
         try {
 
@@ -65,10 +59,14 @@ public class DocumentController extends BaseController{
             doc.setFiletype(file.getContentType());
             doc.setFilepath(filepath);
             doc.setUploadDate(LocalDateTime.now());
-            doc.setStatus("PENDING");
+            if (!"ADMIN".equals(user.getRole())){
+                doc.setStatus("PENDING");
+            }
             doc.setFileSize(file.getSize());
             doc.setUploadedBy(user.getId());
-            doc.setTargetUserId(targetUserId);
+            if ("ADMIN".equals(user.getRole())){
+                doc.setTargetUserId(targetUserId);
+            }
             doc.setDocCategory(docCategory);
 
             service.saveDocument(doc);
@@ -97,7 +95,7 @@ public class DocumentController extends BaseController{
             return ResponseEntity.notFound().build();
         }
 
-        if (!"ADMIN".equals(user.getRole()) && user.getId()!=doc.getUploadedBy()){
+        if (!"ADMIN".equals(user.getRole()) && user.getId()!=doc.getUploadedBy() && user.getId()!=doc.getTargetUserId()){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
         }
 
@@ -114,7 +112,8 @@ public class DocumentController extends BaseController{
     }
 
     @PostMapping("/{id}/status")
-    public ResponseEntity<?> updateDocumentStatus(@PathVariable int id,@RequestParam String status,HttpSession session){
+    public ResponseEntity<?> updateDocumentStatus(@PathVariable int id, @RequestParam String status, @RequestBody(required = false) Map<String,String> data,HttpSession session){
+
         try {
             User user = getAutheticatedUser(session);
 
@@ -131,18 +130,53 @@ public class DocumentController extends BaseController{
             String newStatus=status.toUpperCase();
             List<String> allowedStatuses = Arrays.asList("PENDING", "APPROVED", "REJECTED");
 
+
             if (!allowedStatuses.contains(newStatus)){
                 return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status. Must be PENDING, APPROVED, or REJECTED.");
+            }
+
+            if (newStatus.equals("REJECTED")){
+                doc.setRejectionRemark(data.get("rejectionRemark"));
             }
 
             doc.setStatus(status);
             doc.setStatusModificationTime(LocalDateTime.now());
 
-            System.out.print("user_id"+user.getId());
             doc.setStatusModifiedByAdminId(user.getId());
             service.saveDocument(doc);
 
             return ResponseEntity.ok("Status updated to"+newStatus);
+        }
+        catch (ResponseStatusException e){
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured.");
+        }
+
+    }
+
+    @PostMapping("/remove/{id}")
+    public ResponseEntity<?> removeDocument(@PathVariable Integer id, HttpSession session){
+
+        try {
+            User user = getAutheticatedUser(session);
+
+            Document doc=service.getDocumentById(id);
+
+            if (doc==null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Document Not Found");
+            }
+
+            if (user.getId()==doc.getUploadedBy() && doc.getStatus().equals("PENDING")){
+                service.removeDocumentService(id);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You cant remove this Document");
+            }
+
+            return ResponseEntity.ok().build();
+
         }
         catch (ResponseStatusException e){
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());

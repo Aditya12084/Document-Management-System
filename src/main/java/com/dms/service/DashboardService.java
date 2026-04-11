@@ -1,9 +1,8 @@
 package com.dms.service;
 
 
-import com.dms.controller.DashboardController;
-import com.dms.dto.ActivityDTO;
-import com.dms.dto.SubmissionsDTO;
+import com.dms.dto.admin.ActivityDTO;
+import com.dms.dto.common.DocumentDTO;
 import com.dms.entity.Document;
 import com.dms.entity.User;
 import com.dms.repository.DocumentRepository;
@@ -11,7 +10,6 @@ import com.dms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,10 +87,10 @@ public class DashboardService {
         return activityList;
     }
 
-    public List<SubmissionsDTO> getSubmissions(){
+    public List<DocumentDTO> getSubmissions(){
 
         List<Document> docs=docRepo.findAllByTargetUserIdIsNullOrderByUploadDateDesc();
-        List<SubmissionsDTO> submissionsList=new ArrayList<>();
+        List<DocumentDTO> submissionsList=new ArrayList<>();
 
         String owner="System";
 
@@ -104,7 +102,7 @@ public class DashboardService {
                     owner=user.getFullName();
                 }
             }
-            submissionsList.add(new SubmissionsDTO(doc.getId(),owner,doc.getFilename(),doc.getUploadDate(),doc.getStatus()));
+            submissionsList.add(new DocumentDTO(doc.getId(),owner,doc.getFilename(),doc.getUploadDate(),doc.getRejectionRemark(),doc.getStatus(),doc.getDocCategory(),null,null));
         }
 
         return submissionsList;
