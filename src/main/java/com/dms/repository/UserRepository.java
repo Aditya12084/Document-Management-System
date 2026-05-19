@@ -10,9 +10,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface UserRepository  extends JpaRepository<User, Integer> {
-    User findByUsername(String username);
+
     User findByEmail(String email);
-    long countByRole(String role);
+    User findByIdAndEnabledTrue(int id);
+    User findByUsername(String username);
+
+    User findByUsernameAndEnabledTrue(String username);
+    User findByEmailAndEnabledTrue(String email);
+    long countByRoleAndEnabledTrue(String role);
     List<User> findAllByRoleAndIsSuperAdminFalseAndEnabledTrue(String role);
 
     @Modifying
@@ -20,5 +25,5 @@ public interface UserRepository  extends JpaRepository<User, Integer> {
     @Query("UPDATE User u SET u.enabled=false WHERE u.id=:adminId")
     void disableAdminById(@Param("adminId") String adminId);
 
-    List<User> findAllByRoleIsNullAndEnabledTrue();
+    List<User> findAllByRoleAndEnabledTrue(String role);
 }

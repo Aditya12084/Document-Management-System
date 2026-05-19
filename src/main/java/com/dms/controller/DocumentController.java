@@ -5,6 +5,7 @@ import com.dms.entity.User;
 import com.dms.repository.UserRepository;
 import com.dms.service.DocumentService;
 //import jakarta.annotation.Resource;
+import com.dms.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.datasource.UserCredentialsDataSourceAdapter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,12 +34,12 @@ public class DocumentController extends BaseController{
     private DocumentService service;
 
     @Autowired
-    private UserRepository userRepo;
+    private UserService userService;
 
     private static final String UPLOAD_URL="c:/dms/uploads/";
 
     @PostMapping("/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
                              @RequestParam(value = "targetUserId", required = false) Integer targetUserId,
                              @RequestParam("docCategory") String docCategory, HttpSession session) throws IOException {
 
@@ -46,7 +48,7 @@ public class DocumentController extends BaseController{
             User user=(User) session.getAttribute("user");
 
             if (user==null){
-                return "Please login first";
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Please login first.");
             }
 
             String filename = file.getOriginalFilename();
@@ -64,17 +66,22 @@ public class DocumentController extends BaseController{
             }
             doc.setFileSize(file.getSize());
             doc.setUploadedBy(user.getId());
-            if ("ADMIN".equals(user.getRole())){
-                doc.setTargetUserId(targetUserId);
+            if ("ADMIN".equals(user.getRole())) {
+                if (userService.findById(targetUserId) != null){
+                    doc.setTargetUserId(targetUserId);
+                }
+                else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not exists");
+                }
             }
             doc.setDocCategory(docCategory);
 
             service.saveDocument(doc);
 
-            return "File uploaded successfully!";
+            return ResponseEntity.status(HttpStatus.CREATED).body("File uploaded successfully!");
 
         } catch (Exception e) {
-           return  e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured.");
         }
 
     }

@@ -63,8 +63,8 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
 <script>
+
 
   $(document).ready(function() {
     const $inputs = $('#otp-inputs input');
@@ -127,7 +127,6 @@
         targetUrl = "http://localhost:8080/verify-otp-forget-pass";
       }
 
-
       if (otpValue.length < 6) {
         toasthandler("Please enter all 6 digits.")
         return;
@@ -141,7 +140,7 @@
             otp:otpValue
           }),
           success: function (res) {
-            toasthandler(`OTP Verified Successfully!`,"success");
+            toasthandler(res,"success");
             setTimeout(function(){
 
               if (isUpdatePwdMode) {
@@ -185,14 +184,13 @@
     else{
       toastElement.classList.add("bg-primary");
     }
-
     const toastInstance=new bootstrap.Toast(toastElement,{
       autohide:true,
       delay:3000
     });
-
     toastInstance.show();
   }
+
 </script>
 
 </body>

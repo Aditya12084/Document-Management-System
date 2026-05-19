@@ -20,8 +20,12 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    public User findById(int id){
+        return repo.findByIdAndEnabledTrue(id);
+    }
+
     public User login(String username){
-        return repo.findByUsername(username);
+        return repo.findByUsernameAndEnabledTrue(username);
     }
 
     public void register(User user){
@@ -45,7 +49,7 @@ public class UserService {
     }
 
     public List<UserDTO> getUsers(){
-        List<User> userList=repo.findAllByRoleIsNullAndEnabledTrue();
+        List<User> userList=repo.findAllByRoleAndEnabledTrue("USER");
 
         List<UserDTO> userDTOList=new ArrayList<>();
 

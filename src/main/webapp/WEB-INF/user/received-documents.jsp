@@ -126,9 +126,6 @@
             }
         })
     }
-
-
-
 </script>
 <script src="<c:url value='/js/common.js' />"></script>
 <script src="<c:url value='/js/api.js' />"></script>

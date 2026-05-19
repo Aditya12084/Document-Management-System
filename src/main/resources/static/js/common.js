@@ -3,18 +3,27 @@ if (username) {
     const userElement = document.getElementById("username");
     if(userElement) userElement.innerText = username;
 }
+
+
 document.addEventListener("DOMContentLoaded", function() {
+    // 1. Get the current path (e.g., /dashboard)
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-link');
 
     navLinks.forEach(link => {
-        // We use .includes or exact match depending on your URL structure
-        if (link.getAttribute('href') === currentPath) {
+        // 2. Get the href attribute
+        const linkHref = link.getAttribute('href');
+
+        // 3. Reset all links to default state first
+        link.classList.remove('active');
+        link.classList.add('link-dark');
+
+        // 4. Check for match
+        // We check if currentPath starts with linkHref to handle sub-pages,
+        // OR if they are exactly the same.
+        if (currentPath === linkHref || (linkHref !== '/' && currentPath.startsWith(linkHref))) {
             link.classList.add('active');
             link.classList.remove('link-dark');
-        } else {
-            link.classList.remove('active');
-            link.classList.add('link-dark');
         }
     });
 });
@@ -99,4 +108,31 @@ function truncateFileName(name, startChars = 15, endChars = 5) {
     const end = name.substring(name.length - endChars);
 
     return start + "..." + end;
+}
+
+function toasthandler(msg,type){
+
+    const toastElement=document.getElementById("myToast");
+    const toastbody=document.getElementById("toast-body");
+
+    toastbody.textContent=msg;
+
+    toastElement.classList.remove('bg-primary', 'bg-success', 'bg-danger');
+
+    if(type=="success"){
+        toastElement.classList.add("bg-success");
+    }
+    else if(type=="error"){
+        toastElement.classList.add("bg-danger");
+    }
+    else{
+        toastElement.classList.add("bg-primary");
+    }
+
+    const toastInstance=new bootstrap.Toast(toastElement,{
+        autohide:true,
+        delay:3000
+    });
+
+    toastInstance.show();
 }

@@ -12,18 +12,20 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DocumentRepository extends JpaRepository<Document,Integer> {
-    Document findById(int id);
-//    long countByStatus(String status);
-    long countByTargetUserIdIsNull();
-    long countByStatusAndTargetUserIdIsNull(String status);
-//    List<Document> findByStatusOrderByUploadDateAsc(String status);
-    List<Document> findByStatusAndTargetUserIdIsNullOrderByUploadDateAsc(String status);
-//    List<Document> findTop5ByOrderByUploadDateDesc();
-    List<Document> findTop5ByTargetUserIdIsNullOrderByUploadDateDesc();
-//    List<Document> findTop5ByStatusModificationTimeIsNotNullOrderByStatusModificationTimeDesc();
-    List<Document> findTop5ByStatusModificationTimeIsNotNullAndTargetUserIdIsNullOrderByStatusModificationTimeDesc();
-//    List<Document> findAllByOrderByUploadDateDesc();
-    List<Document> findAllByTargetUserIdIsNullOrderByUploadDateDesc();
+    Document findByIdAndIsActiveTrue(int id);
+
+    int countByStatusIsNotNull();
+    long countByTargetUserIdIsNullAndIsActiveTrue();
+
+    long countByStatusAndTargetUserIdIsNullAndIsActiveTrue(String status);
+
+    List<Document> findByStatusAndTargetUserIdIsNullAndIsActiveTrueOrderByUploadDateAsc(String status);
+
+    List<Document> findTop5ByTargetUserIdIsNullAndIsActiveTrueOrderByUploadDateDesc();
+
+    List<Document> findTop5ByStatusModificationTimeIsNotNullAndTargetUserIdIsNullAndIsActiveTrueOrderByStatusModificationTimeDesc();
+
+    List<Document> findAllByTargetUserIdIsNullAndIsActiveTrueOrderByUploadDateDesc();
 
     List<Document> findAllByUploadedByAndStatusAndIsActiveTrueOrderByUploadDateDesc(Integer id,String status);
 

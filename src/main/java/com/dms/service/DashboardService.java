@@ -26,16 +26,16 @@ public class DashboardService {
     public HashMap<String,Object> getStats(){
         HashMap<String,Object> stats=new HashMap<>();
 
-        stats.put("users",userRepo.count()-userRepo.countByRole("ADMIN"));
-        stats.put("admins",userRepo.countByRole("ADMIN"));
-        stats.put("docs",docRepo.countByTargetUserIdIsNull());
+        stats.put("users",userRepo.count()-userRepo.countByRoleAndEnabledTrue("ADMIN"));
+        stats.put("admins",userRepo.countByRoleAndEnabledTrue("ADMIN"));
+        stats.put("docs",docRepo.countByTargetUserIdIsNullAndIsActiveTrue());
 
-        long totalDocs=docRepo.count();
+        long totalDocs=docRepo.countByStatusIsNotNull();
 
         if (totalDocs>0){
-            stats.put("pending",docRepo.countByStatusAndTargetUserIdIsNull("PENDING")*100/totalDocs);
-            stats.put("rejected",docRepo.countByStatusAndTargetUserIdIsNull("REJECTED")*100/totalDocs);
-            stats.put("approved",docRepo.countByStatusAndTargetUserIdIsNull("approved")*100/totalDocs);
+            stats.put("pending",docRepo.countByStatusAndTargetUserIdIsNullAndIsActiveTrue("PENDING")*100/totalDocs);
+            stats.put("rejected",docRepo.countByStatusAndTargetUserIdIsNullAndIsActiveTrue("REJECTED")*100/totalDocs);
+            stats.put("approved",docRepo.countByStatusAndTargetUserIdIsNullAndIsActiveTrue("APPROVED")*100/totalDocs);
         }
         else{
             stats.put("pending",0);
@@ -48,15 +48,15 @@ public class DashboardService {
     }
 
     public List<Document> getPendingDocuments(){
-        return docRepo.findByStatusAndTargetUserIdIsNullOrderByUploadDateAsc("PENDING");
+        return docRepo.findByStatusAndTargetUserIdIsNullAndIsActiveTrueOrderByUploadDateAsc("PENDING");
     }
 
     public  List<Document> getRecentDocuments(){
-        return  docRepo.findTop5ByTargetUserIdIsNullOrderByUploadDateDesc();
+        return  docRepo.findTop5ByTargetUserIdIsNullAndIsActiveTrueOrderByUploadDateDesc();
     }
 
     public  List<ActivityDTO> getRecentActivity(){
-        List<Document> docs=docRepo.findTop5ByStatusModificationTimeIsNotNullAndTargetUserIdIsNullOrderByStatusModificationTimeDesc();
+        List<Document> docs=docRepo.findTop5ByStatusModificationTimeIsNotNullAndTargetUserIdIsNullAndIsActiveTrueOrderByStatusModificationTimeDesc();
         List<ActivityDTO> activityList=new ArrayList<>();
 
         String adminName = "System";
@@ -89,7 +89,7 @@ public class DashboardService {
 
     public List<DocumentDTO> getSubmissions(){
 
-        List<Document> docs=docRepo.findAllByTargetUserIdIsNullOrderByUploadDateDesc();
+        List<Document> docs=docRepo.findAllByTargetUserIdIsNullAndIsActiveTrueOrderByUploadDateDesc();
         List<DocumentDTO> submissionsList=new ArrayList<>();
 
         String owner="System";

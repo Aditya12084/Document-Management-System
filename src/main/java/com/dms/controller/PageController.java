@@ -7,8 +7,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class PageController {
@@ -17,7 +18,17 @@ public class PageController {
     private UserRepository repo;
 
     @GetMapping("/")
-    public String loadLoginPage(){
+    public String loadLoginPage(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user != null){
+            if ("ADMIN".equals(user.getRole())) {
+                return "redirect:/dashboard";
+            }
+            if ("USER".equals(user.getRole())) {
+                return "redirect:/home";
+            }
+        }
         return  "auth/auth";
     }
 
@@ -26,7 +37,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole())) {
@@ -37,12 +48,18 @@ public class PageController {
     }
 
     @GetMapping("/verify-otp-page")
-    private String verifyOtp(@RequestParam String email){
+    private String verifyOtp(@RequestParam String email,HttpSession session){
 
-        User user=repo.findByEmail(email);
+        User user=repo.findByEmailAndEnabledTrue(email);
+
+        String registerEmail=(String) session.getAttribute("registerSession");
+
+        if (registerEmail!=null){
+            return "auth/verify-otp";
+        }
 
         if (user == null || user.isEnabled()) {
-            return "redirect:/";
+            return "views/error-404";
         }
         return "auth/verify-otp";
     }
@@ -52,20 +69,36 @@ public class PageController {
 
         User user = (User) session.getAttribute("user");
         if (user==null || !user.isEnabled()){
-            return "redirect:/";
+            return "views/error-404";
         }
 
         return "auth/verify-otp";
     }
 
     @GetMapping("/verify-otp-frg-pwd")
-    public String verifyOtpForgetPassword(@RequestParam("email") String email){
+    public String verifyOtpForgetPassword(HttpSession session){
 
-        User user=repo.findByEmail(email);
+        String sessionEmail = (String) session.getAttribute("forgetPasswordSession");
 
-        System.out.println("My email is :"+ email);
+        if (sessionEmail == null) {
+            return "views/error-404";
+        }
 
-        if (user!=null && user.getOtpCreationTime()==null){
+        User user = repo.findByEmailAndEnabledTrue(sessionEmail);
+
+        if (user == null || user.getOtpCreationTime() == null) {
+            return "views/error-404";
+        }
+
+        long minutesElapsed = java.time.Duration.between(user.getOtpCreationTime(), LocalDateTime.now()).toMinutes();
+
+        if (minutesElapsed > 5) {
+            user.setOtp(null);
+            user.setOtpCreationTime(null);
+            repo.save(user);
+
+            session.removeAttribute("forgetPasswordSession");
+
             return "redirect:/";
         }
 
@@ -78,7 +111,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole())) {
@@ -93,7 +126,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole())) {
@@ -108,7 +141,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole()) && user.isSuperAdmin()) {
@@ -122,7 +155,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole())) {
@@ -136,7 +169,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return "redirect:/";
+            return "/views/error-404";
         }
 
         return "common/profile";
@@ -145,14 +178,17 @@ public class PageController {
     @GetMapping("/reset-password")
     public String resetPasswordPage(HttpSession session){
 
-        String email = (String) session.getAttribute("resetPasswordSession");
+//        String resetPassEmail = (String) session.getAttribute("resetPasswordSession");
+//        String forgetPassEmail= (String) session.getAttribute("forgetPasswordSession");
+        Boolean otpVerified= (Boolean) session.getAttribute("otpVerified");
 
-        if (email==null){
-            return "redirect:/";
+        if (otpVerified == null || !otpVerified) {
+            return "views/error-404";
         }
 
         return "auth/reset-password";
     }
+
 
     @GetMapping("/home")
     public String homePage(HttpSession session){
@@ -160,7 +196,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user==null){
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole())) {
@@ -176,7 +212,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user==null){
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole())) {
@@ -192,7 +228,7 @@ public class PageController {
         User user = (User) session.getAttribute("user");
 
         if (user==null){
-            return "redirect:/";
+            return "views/error-404";
         }
 
         if ("ADMIN".equals(user.getRole())) {
@@ -201,5 +237,10 @@ public class PageController {
 
         return "user/received-documents";
     }
+
+//    @GetMapping("/**")
+//    public String handleNotFound() {
+//        return "views/error-404";
+//    }
 
 }

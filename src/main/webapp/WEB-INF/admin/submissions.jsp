@@ -65,7 +65,7 @@
 
       function truncateFileName(name, startChars = 7, endChars = 5) {
           if (!name || name.length <= (startChars + endChars + 3)) {
-              return name; // Return original if it's already short
+              return name;
           }
 
           const start = name.substring(0, startChars);
@@ -100,7 +100,7 @@
                       }
                       if(subs.status=="REJECTED"){
                           statusTag="<td class='text-danger fw-bold'>"+subs.status+"</td>";
-                          actionTag="<td><button onclick='updateStatus(" + subs.id + ", \"PENDING\")' class='btn btn-sm btn-outline-warning' title='Pending'>" +
+                          actionTag="<td><button onclick='updateStatus(" + subs.id + ", \"PENDING\")' class='btn btn-sm btn-outline-warning me-1' title='Pending'>" +
                               "<i class='bi bi-hourglass-split '></i> " +
                               "</button>   <button onclick='updateStatus(" + subs.id + ", \"APPROVED\")' class='btn btn-sm btn-outline-success' title='Approve'>" +
                               "<i class='bi bi-check-lg'></i>" +

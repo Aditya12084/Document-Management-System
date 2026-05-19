@@ -38,22 +38,36 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user, HttpSession session){
-
         try{
-            User adminUser=(User) session.getAttribute("user");
 
-            User existingUser=repo.findByUsername(user.getUsername());
+            if (!user.getUsername().matches("^(?=.*[A-Z])(?=.*\\d).{5,}$")) {
+                return ResponseEntity.badRequest().body("Invalid Username: Min 5 chars, 1 Uppercase, 1 Number required.");
+            }
+            if (!user.getFullname().matches("^[a-zA-Z\\s]{2,50}$")) {
+                return ResponseEntity.badRequest().body("Invalid Name: Only alphabets allowed (2-50 chars).");
+            }
+            if (!user.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                return ResponseEntity.badRequest().body("Invalid Email format.");
+            }
+
+            User existingUser=repo.findByUsernameAndEnabledTrue(user.getUsername());
 
             if (existingUser!=null && existingUser.isEnabled()){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
             }
 
-            User userToSave= existingUser!=null ? existingUser : user;
+            User userToSave = existingUser!=null ? existingUser : user;
+
+            User adminUser=(User) session.getAttribute("user");
 
             if (adminUser!=null && adminUser.isSuperAdmin()){
                 userToSave.setRole("ADMIN");
                 userToSave.setPassword(encoder.encode("admin"));
             } else{
+                userToSave.setRole("USER");
+                if (!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+                    return ResponseEntity.badRequest().body("Password too weak! Must be at least 8 chars, include Upper, Lower, Number, and Special Char.");
+                }
                 userToSave.setPassword(encoder.encode(user.getPassword()));
             }
 
@@ -74,9 +88,12 @@ public class AuthController {
                         .body("Failed to send OTP email.");
             }
 
+            session.setAttribute("registerSession",user.getEmail());
+
             return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful!");
         }
         catch(Exception e){
+//            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred!");
         }
     }
@@ -84,27 +101,41 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user, HttpSession session){
 
-        HashMap<String,String> response=new HashMap<>();
+        try {
+            HashMap<String,String> response=new HashMap<>();
 
-        User dbUser=service.login(user.getUsername());
+            User dbUser=service.login(user.getUsername());
 
-        if (dbUser!=null && encoder.matches(user.getPassword(),dbUser.getPassword())){
-            session.setAttribute("user",dbUser);
-            session.setAttribute("userRole", dbUser.getRole());
-            response.put("username",dbUser.getUsername());
-            response.put("role",dbUser.getRole());
-
-            if (user.getRole()!=null && user.getRole().equals("ADMIN")){
-                response.put("redirectUrl","/dashboard");
-            }
-            else {
-                response.put("redirectUrl","/home");
+            if (dbUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
             }
 
-            return ResponseEntity.ok(response);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            if (!dbUser.isEnabled()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Please verify your account using OTP first.");
+            }
+
+            if (encoder.matches(user.getPassword(),dbUser.getPassword())){
+                session.setAttribute("user",dbUser);
+
+                response.put("username",dbUser.getUsername());
+                response.put("fullname",dbUser.getFullname());
+                response.put("email",dbUser.getEmail());
+                response.put("role",dbUser.getRole());
+
+                if ("ADMIN".equals(user.getRole())){
+                    response.put("redirectUrl","/dashboard");
+                }
+                else {
+                    response.put("redirectUrl","/home");
+                }
+
+                return ResponseEntity.ok(response);
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred!");
         }
     }
 
@@ -121,16 +152,22 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(@RequestBody Map<String,String> request){
+    public ResponseEntity<?> verifyOtp(@RequestBody Map<String,String> request,HttpSession session){
         try{
             String email=request.get("email");
             String enteredOtp=request.get("otp");
 
-//            System.out.println(email+" "+enteredOtp);
-
             User user=repo.findByEmail(email);
 
-            if (user!=null && user.getOtp()!=null && user.getOtp().equals(enteredOtp)){
+            if (user==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email");
+            }
+
+            if (user.getOtp()==null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No active otp request found for this account.");
+            }
+
+            if (user.getOtp().equals(enteredOtp)){
 
                 LocalDateTime creationTime=user.getOtpCreationTime();
 
@@ -139,6 +176,7 @@ public class AuthController {
                 if (minutesElapsed>5) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("OTP has expired. Please register again.");
                 }
+
 
                 user.setEnabled(true);
                 user.setOtp(null);
@@ -169,8 +207,11 @@ public class AuthController {
 
             if (dbUser.isPresent()){
                 User actualUser=dbUser.get();
+                if (actualUser.getOtp()==null){
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No active reset request found for this account.");
+                }
 
-                if (actualUser.getOtp()!=null && enteredOtp.equals(actualUser.getOtp())){
+                if (enteredOtp.equals(actualUser.getOtp())){
 
                     LocalDateTime creationTime=actualUser.getOtpCreationTime();
 
@@ -191,6 +232,8 @@ public class AuthController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP!");
                 }
             }
+
+            session.setAttribute("otpVerified",true);
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not exist.");
 
@@ -258,15 +301,15 @@ public class AuthController {
     }
 
     @PostMapping("/forget-pwd")
-    public ResponseEntity<?> handleForgetPassword(@RequestBody Map<String,String> data){
+    public ResponseEntity<?> handleForgetPassword(@RequestBody Map<String,String> data,HttpSession session){
 
         try{
             String email=data.get("email");
 
-            User user=repo.findByEmail(email);
+            User user=repo.findByEmailAndEnabledTrue(email);
 
             if (user==null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not exists.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Email.");
             }
 
             String otp=generateOTP();
@@ -282,7 +325,10 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Failed to send OTP email.");
             }
-            return ResponseEntity.ok().build();
+
+            session.setAttribute("forgetPasswordSession",email);
+
+            return ResponseEntity.ok("OTP sent successfully! Please check your registered email.");
 
         }
         catch (Exception e){
@@ -294,23 +340,40 @@ public class AuthController {
     @PostMapping("/verify-otp-forget-pass")
     public ResponseEntity<?> verifyOtpForgetPassword(@RequestBody Map<String,String> data,HttpSession session){
         try {
-            String email=data.get("email");
-            String enteredOtp=data.get("otp");
+            String sessionEmail=(String) session.getAttribute("forgetPasswordSession");
 
-            User user=repo.findByEmail(email);
-
-            if (user==null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not exists.");
+            if (sessionEmail==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED) // 408 or 401
+                        .body("Session expired. Please start the password reset process again.");
             }
 
-            if (user.getOtp()!=null && enteredOtp.equals(user.getOtp())){
+            String enteredOtp=data.get("otp");
+
+            User user=repo.findByEmailAndEnabledTrue(sessionEmail);
+
+            if (user==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email.");
+            }
+
+            if (user.getOtp()==null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No active reset request found for this account.");
+            }
+
+            if (enteredOtp.equals(user.getOtp())){
+
+                long minutes = java.time.Duration.between(user.getOtpCreationTime(), java.time.LocalDateTime.now()).toMinutes();
+
+                if (minutes > 5) {
+                    return ResponseEntity.status(HttpStatus.GONE).body("OTP has expired!");
+                }
+
                 user.setOtp(null);
                 user.setOtpCreationTime(null);
                 repo.save(user);
 
-                session.setAttribute("resetPasswordSession", email);
+                session.setAttribute("otpVerified",true);
 
-                return ResponseEntity.ok().build();
+                return ResponseEntity.ok("OTP verified successfully");
             }
             else{
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP!");
@@ -323,26 +386,36 @@ public class AuthController {
     @PostMapping("/reset-pwd")
     public ResponseEntity<?> handleResetPassword(@RequestBody Map<String,String> data,HttpSession session){
         try{
+
             String email = (String) session.getAttribute("resetPasswordSession");
-            if (email==null){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Session expired.");
+            if (email == null) {
+                email = (String) session.getAttribute("forgetPasswordSession");
+            }
+            Boolean otpVerified= (Boolean) session.getAttribute("otpVerified");
+
+            if (email==null || !otpVerified){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Please verify your OTP again.");
             }
 
-            User user=repo.findByEmail(email);
+            User user=repo.findByEmailAndEnabledTrue(email);
 
             if (user==null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not exits");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid Email");
             }
 
             String newPassword=data.get("newPassword");
+
+            if (!newPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+                return ResponseEntity.badRequest().body("Password too weak! Must be at least 8 chars, include Upper, Lower, Number, and Special Char.");
+            }
 
             user.setPassword(encoder.encode(newPassword));
 
             repo.save(user);
 
-            session.removeAttribute("resetPasswordSession");
+            session.invalidate();
 
-            return ResponseEntity.ok("Password reset successful");
+            return ResponseEntity.ok("Password reset successful!");
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");

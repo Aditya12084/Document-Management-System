@@ -1,5 +1,5 @@
 <% Object user = session.getAttribute("user"); if(user != null){
-response.sendRedirect("/"); out.println(user);} %>
+response.sendRedirect("/");} %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,11 +16,10 @@ response.sendRedirect("/"); out.println(user);} %>
       crossorigin="anonymous"
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Welcome - DMS</title>
   </head>
   <body class="bg-light">
-
-
 
   <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModal" aria-hidden="true" ">
     <div class="modal-dialog modal-dialog-centered " style="max-width: 400px;">
@@ -39,7 +38,7 @@ response.sendRedirect("/"); out.println(user);} %>
           </div>
           <div class="modal-footer bg-light">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" onclick="forgotPassword()" id="create-admin-btn" class="btn btn-primary px-4">
+            <button type="submit" onclick="forgotPassword()" id="cont-frg-pwd" class="btn btn-primary px-4">
               <i class="bi bi-check-circle me-1"></i>Continue
             </button>
           </div>
@@ -52,7 +51,7 @@ response.sendRedirect("/"); out.println(user);} %>
   <div class="container-fluid mx-5">
 
     <div class="d-flex ms-2 justify-content-center align-items-center"><img src="https://res.cloudinary.com/dy5qenphg/image/upload/v1775403053/ecc87d3a-0768-4637-9a79-71e716922416_xtx8qd.png" alt="Logo" width="32" height="32" class="me-2">
-      <a class="navbar-brand fw-bold" href="#">DMS</a></div>
+      <a class="navbar-brand fw-bold fs-4" href="#">DMS</a></div>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -97,7 +96,7 @@ response.sendRedirect("/"); out.println(user);} %>
 
         <div class="tab-content mt-3">
           <div class="tab-pane fade show active" id="login">
-            <h4 class="text-center">Login</h4>
+            <h4 class="text-center  mb-2">Login</h4>
             <div id="loginMsg" class="text-danger text-center"></div>
 
             <form id="loginForm">
@@ -108,13 +107,18 @@ response.sendRedirect("/"); out.println(user);} %>
                 placeholder="Username"
                 required
               />
-              <input
-                type="password"
-                id="loginPassword"
-                class="form-control mb-3"
-                placeholder="Password"
-                required
-              />
+              <div class="input-group mb-3">
+                <input
+                        type="password"
+                        id="loginPassword"
+                        class="form-control"
+                        placeholder="Password"
+                        required
+                />
+                <button class="btn btn-outline-secondary" type="button" id="togglePasswordLogin">
+                  <i class="fa fa-eye-slash" id="eyeIcon"></i>
+                </button>
+              </div>
               <button class="btn  w-100" style="background-color: #0090ff;">Login</button>
               <div class="d-flex mt-2 justify-content-end">
                 <a href="javascript:void(0)"
@@ -128,7 +132,7 @@ response.sendRedirect("/"); out.println(user);} %>
           </div>
 
           <div class="tab-pane fade" id="register">
-            <h4 class="text-center">Register</h4>
+            <h4 class="text-center mb-2">Register</h4>
             <div class="registerMsg text-danger text-center"></div>
 
             <form id="registerForm">
@@ -156,13 +160,18 @@ response.sendRedirect("/"); out.println(user);} %>
               placeholder="Email"
               required
               >
-              <input
-                type="password"
-                id="registerPassword"
-                class="form-control mb-3"
-                placeholder="Password"
-                required
-              />
+              <div class="input-group mb-3">
+                <input
+                        type="password"
+                        id="registerPassword"
+                        class="form-control"
+                        placeholder="Password"
+                        required
+                />
+                <button class="btn btn-outline-secondary" type="button" id="togglePasswordRegister">
+                  <i class="fa fa-eye-slash" id="eyeIconReg"></i>
+                </button>
+              </div>
               <button class="btn btn-success w-100">Register</button>
             </form>
           </div>
@@ -176,31 +185,55 @@ response.sendRedirect("/"); out.println(user);} %>
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
-
     <script>
-       function toasthandler(msg,type){
-      
-          const toastElement=document.getElementById("myToast");
-          const toastbody=document.getElementById("toast-body");
 
-          toastbody.textContent=msg;
+      $(document).ready(function() {
+        $("#togglePasswordLogin").click(function() {
+          const passwordField = $("#loginPassword");
+          const eyeIcon = $("#eyeIcon");
 
-          toastElement.classList.remove('bg-primary', 'bg-success', 'bg-danger');
+          const type = passwordField.attr("type") === "password" ? "text" : "password";
+          passwordField.attr("type", type);
 
-          if(type=="success"){
-              toastElement.classList.add("bg-success");
-          }
-          else if(type=="error"){
-            toastElement.classList.add("bg-danger");
-          }
-          else{
-            toastElement.classList.add("bg-primary");
-          }
-          const toastInstance=new bootstrap.Toast(toastElement,{
-            autohide:true,
-            delay:3000
-          });
-          toastInstance.show();
+          eyeIcon.toggleClass("fa-eye fa-eye-slash");
+        });
+      });
+
+      $(document).ready(function() {
+        $("#togglePasswordRegister").click(function() {
+          const passwordField = $("#registerPassword");
+          const eyeIcon = $("#eyeIconReg");
+
+          const type = passwordField.attr("type") === "password" ? "text" : "password";
+          passwordField.attr("type", type);
+
+          eyeIcon.toggleClass("fa-eye fa-eye-slash");
+        });
+      });
+
+      function toasthandler(msg,type){
+
+        const toastElement=document.getElementById("myToast");
+        const toastbody=document.getElementById("toast-body");
+
+        toastbody.textContent=msg;
+
+        toastElement.classList.remove('bg-primary', 'bg-success', 'bg-danger');
+
+        if(type=="success"){
+          toastElement.classList.add("bg-success");
+        }
+        else if(type=="error"){
+          toastElement.classList.add("bg-danger");
+        }
+        else{
+          toastElement.classList.add("bg-primary");
+        }
+        const toastInstance=new bootstrap.Toast(toastElement,{
+          autohide:true,
+          delay:3000
+        });
+        toastInstance.show();
       }
 
 
@@ -220,9 +253,10 @@ response.sendRedirect("/"); out.println(user);} %>
 
           success: function (res) {
             localStorage.setItem("username", res.username);
+            localStorage.setItem("email",res.email);
             localStorage.setItem("role", res.role);
 
-            toasthandler("Login successful! Redirecting...","success");
+            toasthandler("Login successful!","success");
 
             setTimeout(function(){
               window.location.href = res.redirectUrl;
@@ -231,7 +265,7 @@ response.sendRedirect("/"); out.println(user);} %>
           },
 
           error: function (res) {
-            toasthandler("Invalid credentials","errror");
+            toasthandler(res.responseText,"error");
           },
         });
       });
@@ -252,41 +286,42 @@ response.sendRedirect("/"); out.println(user);} %>
           contentType: "application/json",
           data: JSON.stringify(data),
           success: function (res) {
-            toasthandler(`Redirecting for otp verification.`,"success");
+            toasthandler("Please check your email for the OTP.","success");
             setTimeout(function(){
               window.location.href = "/verify-otp-page?email=" + data.email;
-            },3000)
+            },2000)
           },
           error: function (res) {
-            console.log(res);
             toasthandler(res.responseText,"error");
           },
         });
       });
 
+      function forgotPassword() {
+        let forgotEmail = $("#forgot-email").val()
 
-      function forgotPassword(){
-        let forgotEmail=$("#forgot-email").val()
+        $("#cont-frg-pwd").prop("disabled",true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');
 
         $.ajax({
-          url:"http://localhost:8080/forget-pwd",
-          method:"POST",
-          contentType:"application/json",
-          data:JSON.stringify({
-             email:forgotEmail
+          url: "http://localhost:8080/forget-pwd",
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            email: forgotEmail
           }),
-          success: function (res){
-            window.location.href="http://localhost:8080/verify-otp-frg-pwd?email="+forgotEmail+"&mode=forgetPwd"
+          success: function (res) {
+            toasthandler("OTP sent successfully! Please check your registered email.", "success")
+            setTimeout(function (){
+              window.location.href = "http://localhost:8080/verify-otp-frg-pwd?mode=forgetPwd"
+            },1500)
           },
-          error:function (err){
-            console.log("error")
+          error: function (err) {
+            $("#cont-frg-pwd").prop('disabled',false).text('Continue')
+            toasthandler(err.responseText, "error")
           }
-
         })
-
       }
 
-     
     </script>
   </body>
 </html>

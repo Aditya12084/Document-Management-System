@@ -11,6 +11,10 @@
         <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
         <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"/>
     </symbol>
+    <symbol id="file-earmark-text" viewBox="0 0 16 16">
+        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v3.5a.5.5 0 0 0 .5.5H13.5L9.5 1zM4 15a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h4.5v3.5A1.5 1.5 0 0 0 11 6h3.5v8a1 1 0 0 1-1 1H4z"/>
+    </symbol>
     <symbol id="table" viewBox="0 0 16 16">
         <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/>
     </symbol>
@@ -31,6 +35,10 @@
     <symbol id="chat-quote-fill" viewBox="0 0 16 16">
         <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM7.194 6.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 6C4.776 6 4 6.746 4 7.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 9.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 6c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/>
     </symbol>
+    <symbol id="person-badge" viewBox="0 0 16 16">
+        <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+    </symbol>
     <symbol id="cpu-fill" viewBox="0 0 16 16">
         <path d="M6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
         <path d="M5.5.5a.5.5 0 0 0-1 0V2A2.5 2.5 0 0 0 2 4.5H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2A2.5 2.5 0 0 0 4.5 14v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14a2.5 2.5 0 0 0 2.5-2.5h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14A2.5 2.5 0 0 0 11.5 2V.5a.5.5 0 0 0-1 0V2h-1V.5a.5.5 0 0 0-1 0V2h-1V.5a.5.5 0 0 0-1 0V2h-1V.5zm1 4.5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3A1.5 1.5 0 0 1 6.5 5z"/>
@@ -46,6 +54,10 @@
         <path d="M9.465 10H12a2 2 0 1 1 0 4H9.465c.34-.588.535-1.271.535-2 0-.729-.195-1.412-.535-2z"/>
         <path d="M6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 1a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm.535-10a3.975 3.975 0 0 1-.409-1H4a1 1 0 0 1 0-2h2.126c.091-.355.23-.69.41-1H4a2 2 0 1 0 0 4h2.535z"/>
         <path d="M14 4a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
+    </symbol>
+    <symbol id="person-gear" width="18" height="18" viewBox="0 0 16 16">
+        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Zm3.637-1.044a.89.89 0 0 0 0-1.78.89.89 0 0 0 0 1.78Z"/>
+        <path d="M13.335 10.15a.488.488 0 0 0-.54-.315l-.507.102c-.171-.287-.382-.55-.624-.782l.179-.475a.488.488 0 0 0-.198-.546l-.312-.197a.488.488 0 0 0-.582.05l-.39.329c-.31-.07-.632-.1-.951-.093l-.221-.456a.488.488 0 0 0-.52-.258l-.366.074a.488.488 0 0 0-.371.362l-.068.502c-.287.171-.55.382-.782.624l-.475-.179a.488.488 0 0 0-.546.199l-.197.312a.488.488 0 0 0 .05.582l.329.39c-.07.31-.1.632-.093.951l-.456.221a.488.488 0 0 0-.258.52l.074.366a.488.488 0 0 0 .362.371l.502.068c.171.287.382.55.782.624l-.179.475a.488.488 0 0 0 .199.546l.312.197a.488.488 0 0 0 .582-.05l.39-.329c.31.07.632.1.951.093l.221.456a.488.488 0 0 0 .52.258l.366-.074a.488.488 0 0 0 .371-.362l.068-.502c.287-.171.55-.382.782-.624l.475.179a.488.488 0 0 0 .546-.199l.197-.312a.488.488 0 0 0-.05-.582l-.329-.39c.07-.31.1-.632.093-.951l.456-.221a.488.488 0 0 0 .258-.52l-.074-.366a.488.488 0 0 0-.362-.371l-.502-.068Z"/>
     </symbol>
     <symbol id="tools" viewBox="0 0 16 16">
         <path d="M1 0L0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.356 3.356a1 1 0 0 0 1.414 0l1.586-1.586a1 1 0 0 0 0-1.414l-3.356-3.356a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3c0-.269-.035-.53-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814L1 0zm9.646 10.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708zM3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026L3 11z"/>
@@ -67,71 +79,62 @@
         <ul class="nav nav-pills flex-column mb-auto">
             <c:if test="${sessionScope.user.role=='ADMIN'}">
             <li>
-                <a href="/dashboard" class="nav-link active" data-target="section-dashboard">
-                    <svg class="bi me-1" width="16" height="16">
-                        <use xlink:href="#speedometer2"></use>
-                    </svg>
+                <a href="/dashboard" class="nav-link ${pageContext.request.requestURI.endsWith('/dashboard') ? 'active' : 'link-dark'}" data-target="section-dashboard">
+                    <i class="bi bi-speedometer2 fs-5 me-1"></i>
                     Dashboard
                 </a>
             </li>
             </c:if >
             <c:if test="${sessionScope.user.role=='ADMIN'}">
-                <li>
-                    <a href="/submissions" class="nav-link link-dark">
-                        <svg class="bi me-1" width="16" height="16">
-                            <use xlink:href="#grid"></use>
-                        </svg>
+                <li class="p-0">
+                    <a href="/submissions" class="nav-link ${pageContext.request.requestURI.endsWith('/submissions') ? 'active' : 'link-dark'}">
+                            <i class="bi bi-file-earmark-text-fill fs-5 small me-1"></i>
                         User Submissions
                     </a>
                 </li>
             </c:if >
             <c:if test="${sessionScope.user.role=='ADMIN'}">
                 <li>
-                <a href="/users" class="nav-link link-dark" data-target="section-users">
-                    <svg class="bi me-1" width="16" height="16">
-                        <use xlink:href="#people-circle"></use>
-                    </svg>
+                <a href="/users" class="nav-link ${pageContext.request.requestURI.endsWith('/users') ? 'active' : 'link-dark'}" data-target="section-users">
+                    <i class="bi bi-person-fill fs-5 me-1"></i>
                     Users
                 </a>
             </li>
             </c:if >
             <c:if test="${sessionScope.user.role=='ADMIN'}">
             <li>
-                <a href="/manage-admins" class="nav-link link-dark">
-                    <svg class="bi me-1" width="16" height="16">
-                        <use xlink:href="#grid"></use>
-                    </svg>
+                <a href="/manage-admins" class="nav-link ${pageContext.request.requestURI.endsWith('/manage-admins') ? 'active' : 'link-dark'}">
+                    <i class="bi bi-person-fill-gear fs-5 me-1"></i>
                     Manage Admins
                 </a>
             </li>
             </c:if >
 
 
-
+            <c:if test="${sessionScope.user.role=='USER'}">
             <li>
-                <a href="/home" class="nav-link active" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
-                    <svg class="bi me-1" width="20" height="16">
-                        <use xlink:href="#speedometer2"></use>
-                    </svg>
+                <a href="/home" class="nav-link ${pageContext.request.requestURI.endsWith('/home') ? 'active' : 'link-dark'}" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
+                    <i class="bi bi-house-door-fill fs-5 me-2"></i>
                     Home
                 </a>
             </li>
+            </c:if >
+            <c:if test="${sessionScope.user.role=='USER'}">
             <li>
-                <a href="/my-documents" class="nav-link active" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
-                    <svg class="bi me-1" width="16" height="16">
-                        <use xlink:href="#speedometer2"></use>
-                    </svg>
+                <a href="/my-documents" class="nav-link ${pageContext.request.requestURI.endsWith('/my-documents') ? 'active' : 'link-dark'}" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
+                    <i class="bi bi-file-earmark-person-fill fs-5 me-2"></i>
                     My Documents
                 </a>
             </li>
+            </c:if >
+            <c:if test="${sessionScope.user.role=='USER'}">
             <li>
-                <a href="/received-documents" class="nav-link active" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
-                    <svg class="bi me-1" width="16" height="16">
-                        <use xlink:href="#speedometer2"></use>
-                    </svg>
+                <a href="/received-documents" class="nav-link ${pageContext.request.requestURI.endsWith('/received-documents') ? 'active' : 'link-dark'}" style="padding-left: 10px; padding-right: 7px;" data-target="section-dashboard">
+                    <i class="bi bi-file-earmark-arrow-down-fill fs-5 me-2"></i>
                     Received Documents
                 </a>
             </li>
+            </c:if >
         </ul>
         <hr>
         <div class="dropdown d-flex">

@@ -22,6 +22,8 @@
     <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.3.7/js/dataTables.bootstrap5.js"></script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 
     <style>
         #example_wrapper{
@@ -39,6 +41,7 @@
 <%@ include file="sidebar.jsp"%>
 
 <div class="m-3 d-flex flex-column flex-grow-1 ">
+
     <h2 class="mb-3">My Profile</h2>
 
     <div class="d-flex align-items-center">
@@ -50,13 +53,13 @@
             <div class="">
                 <div class="mb-3 d-flex align-items-center">
                     <h6 class="text-block mb-0">Username:</h6>
-                    <p class="mb-0 ms-1">Aditya26</p>
+                    <p class="mb-0 ms-1">${sessionScope.user.username}</p>
                 </div><div class="mb-3 d-flex align-items-center">
                     <h6 class="text-block mb-0">Full Name:</h6>
-                    <p class="mb-0 ms-1">Aditya Patayane</p>
+                    <p class="mb-0 ms-1">${sessionScope.user.fullname}</p>
                 </div><div class="mb-3 d-flex align-items-center">
                     <h6 class="text-block mb-0">Email:</h6>
-                    <p class="mb-0 ms-1">adityapatayane1@gmail.com</p>
+                    <p class="mb-0 ms-1">${sessionScope.user.email}</p>
                 </div>
                 <div class="d-flex justify-content-center" >
                     <button type="button"  id="update-pwd-btn" style="display: block" onclick="showUpdatePwdDiv()" class="btn btn-primary">Update Password</button>
@@ -64,14 +67,51 @@
             </div>
             <div id="update-pwd-div" style="display: none">
                 <form>
-                <div class="mb-3">
-                    <input name="" id="current-pwd" type="password" class="form-control" placeholder="Enter current password" required>
-                </div>
-                <div class="mb-3">
-                    <input name="admin-email" type="password" id="new-pwd" class="form-control" placeholder="Enter new password" required>
-                </div><div class="mb-3">
-                <input name="admin-email" type="password" id="retype-new-pwd" class="form-control" placeholder="Re-type new password" required>
-                </div>
+                    <div class="input-group mb-3">
+                        <input
+                                type="password"
+                                id="current-pwd"
+                                class="form-control"
+                                placeholder="Enter current password"
+                                required
+                        />
+                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordCurrent">
+                            <i class="fa fa-eye-slash" id="eyeIconCurrPass"></i>
+                        </button>
+                    </div>
+<%--                <div class="mb-3">--%>
+<%--                    <input name="" id="current-pwd" type="password" class="form-control" placeholder="Enter current password" required>--%>
+<%--                </div>--%>
+<%--                <div class="mb-3">--%>
+<%--                    <input name="admin-email" type="password" id="new-pwd" class="form-control" placeholder="Enter new password" required>--%>
+<%--                </div>--%>
+                    <div class="input-group mb-3">
+                        <input
+                                type="password"
+                                id="new-pwd"
+                                class="form-control"
+                                required
+                                placeholder="Enter new password"
+                        />
+                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordNew">
+                            <i class="fa fa-eye-slash" id="eyeIconNewPass"></i>
+                        </button>
+                    </div>
+<%--                    <div class="mb-3">--%>
+<%--                <input name="admin-email" type="password" id="retype-new-pwd" class="form-control" placeholder="Re-type new password" required>--%>
+<%--                </div>--%>
+                    <div class="input-group mb-3">
+                        <input
+                                type="password"
+                                id="retype-new-pwd"
+                                class="form-control"
+                                placeholder="Re-type new password"
+                                required
+                        />
+                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordRetype">
+                            <i class="fa fa-eye-slash" id="eyeIconRetypePass"></i>
+                        </button>
+                    </div>
                 <div class="d-flex flex-wrap justify-content-center gap-1 ">
                     <button type="submit" class="col-5 btn btn-success" id="updatePwdbtn">Update</button>
                     <button type="button" onclick="showUpdatePwdDiv()" class="col-5 btn btn-danger w-80">Cancel</button>
@@ -82,10 +122,53 @@
         </form>
         </div>
     </div>
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="myToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toast-body">
+                    Hello, world! This is a toast message.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
 
 </div>
 
 <script>
+
+    $(document).ready(function() {
+        $("#togglePasswordCurrent").click(function() {
+            const passwordField = $("#current-pwd");
+            const eyeIcon = $("#eyeIconCurrPass");
+
+            const type = passwordField.attr("type") === "password" ? "text" : "password";
+            passwordField.attr("type", type);
+
+            eyeIcon.toggleClass("fa-eye fa-eye-slash");
+        });
+    });
+    $(document).ready(function() {
+        $("#togglePasswordNew").click(function() {
+            const passwordField = $("#new-pwd");
+            const eyeIcon = $("#eyeIconNewPass");
+
+            const type = passwordField.attr("type") === "password" ? "text" : "password";
+            passwordField.attr("type", type);
+
+            eyeIcon.toggleClass("fa-eye fa-eye-slash");
+        });
+    });
+    $(document).ready(function() {
+        $("#togglePasswordRetype").click(function() {
+            const passwordField = $("#retype-new-pwd");
+            const eyeIcon = $("#eyeIconRetypePass");
+
+            const type = passwordField.attr("type") === "password" ? "text" : "password";
+            passwordField.attr("type", type);
+
+            eyeIcon.toggleClass("fa-eye fa-eye-slash");
+        });
+    });
 
     function showUpdatePwdDiv(){
         let updatePwdDiv=document.getElementById("update-pwd-div");
@@ -109,6 +192,11 @@
         let newPwd=$("#new-pwd").val()
         let retypeNewPwd=$("#retype-new-pwd").val()
 
+        if (newPwd!==retypeNewPwd){
+            toasthandler("Passwords do not match. Please re-type your password.","error")
+            return
+        }
+
 
         $.ajax({
             url:"http://localhost:8080/verify-current-pwd",
@@ -119,16 +207,19 @@
                 newPwd:newPwd
             }),
             success: function (res){
-                window.location.href="/verify-otp-pass-up?mode=pwdUpdate"
+                toasthandler("OTP sent successfully! Please check your registered email.", "success")
+                setTimeout(function (){
+                    window.location.href="/verify-otp-pass-up?mode=pwdUpdate"
+                },1500)
             },
             error: function (err){
-                console.log("error")
+                toasthandler(err.responseText,"error")
             }
 
         })
     })
 </script>
-
+<script src="<c:url value='/js/common.js' />"></script>
 </body>
 </html>
 
